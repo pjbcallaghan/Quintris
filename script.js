@@ -1,19 +1,19 @@
 import {classic, quintris, hextris} from "./shape-collections.js";
 
+//Canvases
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
-
 const subCanvas = document.getElementById('hold-menu');
 const subCtx = subCanvas.getContext('2d');
 
-let gameMode = 'classic'
+let gameMode = 'hextris'
 let TETRIMINOS = classic;
 
 switch (gameMode) {
-  case 'quintris': TETRIMINOS = classic + quintris;
+  case 'quintris': TETRIMINOS = [...classic, ...quintris];
     break;
 
-  case 'hextris': TETRIMINOS = classic + quintris + hextris;
+  case 'hextris': TETRIMINOS = [...classic, ...quintris, ...hextris];
     break;
 
   default:
@@ -64,6 +64,12 @@ function startGame() {
   gameLoop();
 }
 
+let startGameButton = document.querySelector('.js-start-game-button');
+startGameButton.addEventListener('click', () => {
+  startGame();
+}); 
+
+
 //For gapless audio looping
 bgMusic.addEventListener('timeupdate', function(){
   let buffer = .35
@@ -98,7 +104,7 @@ let level = 1;
 const levelText = document.querySelector(".level-text");
 const scoreText = document.querySelector(".score-text");
 scoreText.innerHTML = `Score: ${score}`;
-level.innerHTML = `Level: ${level}`;
+levelText.innerHTML = `Level: ${level}`;
 
 // Grid initialization
 let grid = [];
@@ -119,7 +125,7 @@ let currentTetrimino = {
   shape: TETRIMINOS[initialTetrimino],
   x: Math.floor(COLS / 2) - 1,
   y: 0,
-  color: COLORS[initialTetrimino],
+  color: COLORS[initialTetrimino % 10],
 };
 
 let holdUsed = false;
@@ -144,7 +150,7 @@ function swapTetrimino() {
       shape: TETRIMINOS[randomIndex],
       x: Math.floor(COLS / 2) - 1,
       y: 0,
-      color: COLORS[randomIndex],
+      color: COLORS[randomIndex % 10],
     }
   } else {
     [holdTetrimino, currentTetrimino] = [currentTetrimino, holdTetrimino];
@@ -285,7 +291,7 @@ function moveTetrimino() {
       shape: TETRIMINOS[randomIndex],
       x: Math.floor(COLS / 2) - 1,
       y: 0,
-      color: COLORS[randomIndex],
+      color: COLORS[randomIndex % 10],
     };
   }
 }
