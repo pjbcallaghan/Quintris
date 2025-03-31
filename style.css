@@ -1,0 +1,142 @@
+body {
+    font-family: Arial;
+    color: white;
+
+    display: flex;
+    flex-direction: column;  /* Stacks elements vertically */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #505050;
+}
+
+.hold-menu {
+    position: absolute;
+    left: 95.5%;
+    margin: 6px;
+}
+
+#hold-menu {
+    border-left:#000000
+}
+
+.game-area {
+    display: flex;
+    position: relative;
+}
+
+.gameBoard {
+    position: relative;
+    align-items: end;
+    display: flex;
+    align-items: center;
+    justify-content: center;  /* Centers horizontally */
+    margin: 6px;
+
+}
+
+
+.menu,
+.submit-score-menu {
+    position: absolute;
+    display: flex;
+    flex-direction: column;  /* Stack buttons vertically */
+    align-items: stretch;    /* Make all buttons the same width */
+    justify-content: center;   
+}
+
+.menu {
+    display: flex;
+}
+
+.submit-score-menu {
+    display: none;
+}
+
+.menu-button {
+    margin: 12px;
+    border: solid rgb(255, 255, 255);
+    background-color: rgb(255, 67, 208);
+    border-radius: 8px;
+    font-size: 20px;
+    padding: 12px;
+    color: white;
+    text-align: center;
+}
+
+.menu-button:hover {
+    background-color: rgb(255, 0, 191);
+}
+
+.score-text {
+    position: absolute;
+    align-items: end;
+    top: 30px;
+    left: 10px;
+}
+
+.level-text {
+    position: absolute;
+    align-items: end;
+    top: 10px;
+    left: 10px;
+}
+
+canvas {
+    border: 2px solid hsl(0, 0%, 100%);
+    background-color: #000000;
+    position: relative;
+}
+
+.logo {
+    height: 90px;
+    margin-left: -8px;
+}
+
+.ss-menu-button {
+    margin: 10px;
+    border: solid rgb(255, 255, 255);
+    background-color: rgb(255, 67, 208);
+    border-radius: 8px;
+    font-size: 12px;
+    padding: 6px;
+    color: white;
+}
+
+.ss-menu-button:hover {
+    background-color: rgb(255, 0, 191);
+}
+
+.ss-menu-button:active {
+    background-color: rgb(255, 0, 157);
+}
+
+
+.ss-menu-button {
+    margin: 4px;
+    font-size: 12px;
+}
+
+.ss-input {
+    margin: 4px;
+}
+
+.ss-input {
+    font-size: 12px;
+    border-radius: 10px;
+    padding: 6px;
+    border: solid;
+    color:rgb(255, 23, 197);
+}
+
+.mute-button {
+    width: 100px;
+    margin: 4px;
+    border: solid rgb(255, 255, 255);
+    background-color: rgb(255, 67, 208);
+    border-radius: 8px;
+    font-size: 12px;
+    padding: 6px;
+    color: white;
+}
