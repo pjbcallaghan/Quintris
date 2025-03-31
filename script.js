@@ -1,6 +1,6 @@
 import { classic, quintris, hextris } from "./shape-collections.js";
 import { Sounds } from "./sounds.js";
-
+Sounds.init();
 
 //Canvases
 const canvas = document.getElementById('gameCanvas');
@@ -21,10 +21,6 @@ switch (gameMode) {
   default:
     break;
 };
-
-
-//Mute button
-document.querySelector(".js-mute-music").addEventListener("click", () => Sounds.toggleAudio());
 
 let menu = document.querySelector(".menu")
 
@@ -55,17 +51,6 @@ let startGameButton = document.querySelector('.js-start-game-button');
 startGameButton.addEventListener('click', () => {
   startGame();
 }); 
-
-
-//For gapless audio looping
-// bgMusic.addEventListener('timeupdate', function(){
-//   let buffer = .35
-//   if(this.currentTime > this.duration - buffer){
-//       this.currentTime = 0
-//       this.play()
-//   }
-// });
-
 
 // Game constants
 const COLS = 10;
@@ -181,7 +166,7 @@ function checkLineClear() {
       grid[0] = new Array(grid[0].length).fill('EMPTY');      
       score += 400 * level;
       scoreText.innerHTML = `Score: ${score}`
-      lineClearSound.play();
+      Sounds.lineClearSound.play();
     }
   }
 }
@@ -261,8 +246,8 @@ function lockTetrimino() {
   }
   score += 40 * level
   scoreText.innerHTML = `Score: ${score}`;
-  pieceDownSound.currentTime = 0;
-  pieceDownSound.play();
+  Sounds.pieceDownSound.currentTime = 0;
+  Sounds.pieceDownSound.play();
   checkLineClear();
 }
 
@@ -341,8 +326,8 @@ let ssMenu = document.querySelector(".submit-score-menu")
 function checkGameOver() {
   if (grid[0][5] !== 'EMPTY' || grid[0][4] !== 'EMPTY' || grid[0][6] !== 'EMPTY') {
       gameRunning = false;
-      // bgMusic.pause();
-      gameOverSound.play();
+      Sounds.bgMusic.pause();
+      Sounds.gameOverSound.play();
       ssMenu.style.display = "flex"
   }
 }
