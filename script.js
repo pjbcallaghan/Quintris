@@ -1,4 +1,6 @@
-import {classic, quintris, hextris} from "./shape-collections.js";
+import { classic, quintris, hextris } from "./shape-collections.js";
+import { Sounds } from "./sounds.js";
+
 
 //Canvases
 const canvas = document.getElementById('gameCanvas');
@@ -21,23 +23,8 @@ switch (gameMode) {
 };
 
 
-//Audio Systems
-let bgMusic = document.getElementById("bgMusic");
-let lineClearSound = document.getElementById("line-clear"); 
-let gameOverSound = document.getElementById("game-over.mp3");
-let pieceDownSound = document.getElementById("piece-down");
-let muteButton = document.querySelector(".mute-button")
-
 //Mute button
-function toggleAudio() {
-  if (!bgMusic.muted) {
-    bgMusic.muted = true;
-    muteButton.innerHTML = "Unmute Music"
-  } else {
-    bgMusic.muted = false;
-    muteButton.innerHTML = "Mute Music"
-  }
-}
+document.querySelector(".js-mute-music").addEventListener("click", () => Sounds.toggleAudio());
 
 let menu = document.querySelector(".menu")
 
@@ -59,8 +46,8 @@ function startGame() {
   gameRunning = true;
   menu.style.display = "none";
   ssMenu.style.display = "none";
-  bgMusic.currentTime = 0;
-  bgMusic.play()
+  Sounds.bgMusic.currentTime = 0;
+  Sounds.bgMusic.play()
   gameLoop();
 }
 
@@ -71,13 +58,13 @@ startGameButton.addEventListener('click', () => {
 
 
 //For gapless audio looping
-bgMusic.addEventListener('timeupdate', function(){
-  let buffer = .35
-  if(this.currentTime > this.duration - buffer){
-      this.currentTime = 0
-      this.play()
-  }
-});
+// bgMusic.addEventListener('timeupdate', function(){
+//   let buffer = .35
+//   if(this.currentTime > this.duration - buffer){
+//       this.currentTime = 0
+//       this.play()
+//   }
+// });
 
 
 // Game constants
@@ -354,7 +341,7 @@ let ssMenu = document.querySelector(".submit-score-menu")
 function checkGameOver() {
   if (grid[0][5] !== 'EMPTY' || grid[0][4] !== 'EMPTY' || grid[0][6] !== 'EMPTY') {
       gameRunning = false;
-      bgMusic.pause();
+      // bgMusic.pause();
       gameOverSound.play();
       ssMenu.style.display = "flex"
   }

@@ -57,13 +57,13 @@ Create different game modes
     </div>
 
     <div class="mute-buttons">
-      <button class="mute-button" onclick="toggleAudio()">Mute Music</button>
+      <button class="mute-button js-mute-music">Mute Music</button>
       <button class="mute-button">Mute Sounds</button>
      </div>
 
-    <audio id="bgMusic" src="sounds/tetris-loop.mp3" loop></audio>
+    <audio class="bgMusic" src="sounds/tetris-loop.mp3" loop></audio>
     <audio id="line-clear" src="sounds/line-clear.mp3"></audio>
-    <audio id="game-over.mp3" src="sounds/game-over.mp3"></audio>
+    <audio id="game-over" src="sounds/game-over.mp3"></audio>
     <audio id="piece-down" src="sounds/piece-down.mp3"></audio>
 
     <script type="module" src="script.js"></script>
