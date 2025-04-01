@@ -6,3 +6,4 @@ document.addEventListener('keydown', (event) => {
 });
 
 const game = new Game();
+

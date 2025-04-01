@@ -39,7 +39,8 @@ body {
 
 .menu,
 .submit-score-menu,
-.mode-menu {
+.mode-menu,
+.leaderboard {
     position: absolute;
     display: flex;
     flex-direction: column;  /* Stack buttons vertically */
@@ -59,7 +60,16 @@ body {
     display: none;
 }
 
-.menu-button {
+.leaderboard {
+    display: none;
+}
+
+
+.menu-button,
+.user-score,
+.user-rank,
+.user-name,
+.scoreboard-button  {
     margin: 12px;
     border: solid rgb(255, 255, 255);
     background-color: rgb(255, 67, 208);
@@ -69,6 +79,47 @@ body {
     color: white;
     text-align: center;
 }
+
+.leaderboard-entry {
+    display: flex;
+    position: relative;
+    flex-direction: row;
+}
+
+.page-control {
+    margin-left: auto;
+    display: flex; /* Keeps buttons in a row */
+}
+
+.user-score,
+.user-rank,
+.user-name,
+.scoreboard-button {
+    margin: 4px;
+    font-size: 14px;
+    padding: 6px;
+}
+
+.scoreboard-button {
+    padding-left: 15px;
+    padding-right: 14px;
+
+}
+
+.user-rank {
+    width: 30px;
+}
+
+.user-name {
+    width: 100px;
+    text-align: left;
+}
+
+.user-score {
+    text-align: right;
+    width: 75px;
+}
+
 
 .menu-button:hover {
     background-color: rgb(255, 0, 191);
@@ -145,3 +196,4 @@ canvas {
     padding: 6px;
     color: white;
 }
+

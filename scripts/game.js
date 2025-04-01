@@ -23,6 +23,7 @@ export class Game {
   }
   
   startGame() {
+    Sounds.bgMusic.currentTime = 0;
     Sounds.bgMusic.play();
     this.tetrominos = this.ui.gameMode;
     this.ui.showMenu();
@@ -137,6 +138,8 @@ export class Game {
       this.grid.getGrid()[0][6] !== 'EMPTY'
     ) {
       this.gameRunning = false;
+      this.ui.score = this.score;
+      this.ui.scoreSubmitted = false;
       Sounds.bgMusic.pause();
       Sounds.gameOverSound.play();
       this.ui.showGameOver();
