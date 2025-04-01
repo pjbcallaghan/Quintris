@@ -1,273 +1,252 @@
 import { classic, quintris, hextris } from "./shape-collections.js";
 import { Sounds } from "./sounds.js";
+
+// Initialize sounds
 Sounds.init();
 
-//Canvases
+// Canvases and contexts
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const subCanvas = document.getElementById('hold-menu');
 const subCtx = subCanvas.getContext('2d');
 
-let gameMode = 'hextris'
-let TETRIMINOS = classic;
-
-switch (gameMode) {
-  case 'quintris': TETRIMINOS = [...classic, ...quintris];
-    break;
-
-  case 'hextris': TETRIMINOS = [...classic, ...quintris, ...hextris];
-    break;
-
-  default:
-    break;
+// Game mode configuration
+const gameModes = {
+  classic,
+  quintris: [...classic, ...quintris],
+  hextris: [...classic, ...quintris, ...hextris],
 };
 
-let menu = document.querySelector(".menu")
+let gameMode = 'hextris';
+let TETRIMINOS = gameModes[gameMode];
 
-function startGame() {
-  holdTetrimino = {
-    shape: 0,
-    color: 0
-  }
-  subCtx.clearRect(0, 0, subCanvas.width, subCanvas.height);
-
-
-  gameSpeed = 600;
-  level = 1;
-  levelText.innerHTML = `Level: ${level}`
-
-  score = 0;
-  initGrid();
-
-  gameRunning = true;
-  menu.style.display = "none";
-  ssMenu.style.display = "none";
-  Sounds.bgMusic.currentTime = 0;
-  Sounds.bgMusic.play()
-  gameLoop();
-}
-
+// Menu elements
+let menu = document.querySelector(".menu");
+let ssMenu = document.querySelector(".submit-score-menu");
 let startGameButton = document.querySelector('.js-start-game-button');
-startGameButton.addEventListener('click', () => {
-  startGame();
-}); 
 
 // Game constants
 const COLS = 10;
 const ROWS = 20;
 const BLOCK_SIZE = 30;
 const COLORS = [
-  '#FF5733',
-  '#33FF57',
-  '#3357FF',
-  '#FF33A1',
-  '#FFD633',
-  '#00d5ff', 
-  '#9B33FF',
-  '#a60000',
-  '#19a600',
-  '#0007d9',
-
+  '#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFD633', '#00d5ff', 
+  '#9B33FF', '#a60000', '#19a600', '#0007d9',
 ];
 
-// Score variables
+// Score elements
+const scoreText = document.querySelector(".score-text");
+const levelText = document.querySelector(".level-text");
+
+// Game variables
 let score = 0;
 let level = 1;
-const levelText = document.querySelector(".level-text");
-const scoreText = document.querySelector(".score-text");
-scoreText.innerHTML = `Score: ${score}`;
-levelText.innerHTML = `Level: ${level}`;
-
-// Grid initialization
+let gameRunning = false;
+let gameSpeed = 600;
+let currentTetrimino, holdTetrimino, holdUsed = false;
 let grid = [];
-initGrid();
 
+// Initialize game grid
 function initGrid() {
-  for (let row = 0; row < ROWS; row++) {
-    grid[row] = [];
-    for (let col = 0; col < COLS; col++) {
-      grid[row][col] = 'EMPTY';
-    }
-  }
+  grid = Array.from({ length: ROWS }, () => Array(COLS).fill('EMPTY'));
 }
 
-// Initial tetrimino
-let initialTetrimino = Math.floor(Math.random() * TETRIMINOS.length);
-let currentTetrimino = {
-  shape: TETRIMINOS[initialTetrimino],
-  x: Math.floor(COLS / 2) - 1,
-  y: 0,
-  color: COLORS[initialTetrimino % 10],
-};
-
-let holdUsed = false;
-
-let holdTetrimino = {
-  shape: 0,
-  x: Math.floor(COLS / 2) - 1,
-  y: 0,
-  color: 0,
+// Initialize the game
+function startGame() {
+  resetGameVariables();
+  Sounds.bgMusic.currentTime = 0;
+  Sounds.bgMusic.play();
+  menu.style.display = "none";
+  ssMenu.style.display = "none";
+  gameRunning = true;
+  gameLoop();
 }
 
+// Reset game variables
+function resetGameVariables() {
+  score = 0;
+  level = 1;
+  levelText.innerHTML = `Level: ${level}`;
+  scoreText.innerHTML = `Score: ${score}`;
+  initGrid();
 
-function swapTetrimino() {
-  if (holdUsed) { return; }
-
-  if (holdTetrimino.shape === 0) {
-    holdTetrimino.shape = currentTetrimino.shape;
-    holdTetrimino.color = currentTetrimino.color;
-  
-    let randomIndex = Math.floor(Math.random() * TETRIMINOS.length);
-    currentTetrimino = {
-      shape: TETRIMINOS[randomIndex],
-      x: Math.floor(COLS / 2) - 1,
-      y: 0,
-      color: COLORS[randomIndex % 10],
-    }
-  } else {
-    [holdTetrimino, currentTetrimino] = [currentTetrimino, holdTetrimino];
-    currentTetrimino.x = Math.floor(COLS / 2) - 1;
-    currentTetrimino.y = 0;
-  }
-  drawHoldItem();
-  holdUsed = true;
+  holdTetrimino = { shape: 0, color: 0 };
+  currentTetrimino = generateRandomTetrimino();
+  holdUsed = false;
 }
 
-// Draw the grid
+// Generate a random tetrimino
+function generateRandomTetrimino() {
+  const randomIndex = Math.floor(Math.random() * TETRIMINOS.length);
+  return {
+    shape: TETRIMINOS[randomIndex],
+    x: Math.floor(COLS / 2) - 1,
+    y: 0,
+    color: COLORS[randomIndex % 10],
+  };
+}
+
+// Handle the start game button click
+startGameButton.addEventListener('click', startGame);
+
+// Draw the grid on canvas
 function drawGrid() {
-  for (let row = 0; row < ROWS; row++) {
-    for (let col = 0; col < COLS; col++) {
-      ctx.fillStyle = grid[row][col] === 'EMPTY' ? '#000' : grid[row][col];
-      ctx.fillRect(col * BLOCK_SIZE, row * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
-    }
-  }
+  grid.forEach((row, rowIndex) => {
+    row.forEach((col, colIndex) => {
+      ctx.fillStyle = col === 'EMPTY' ? '#000' : col;
+      ctx.fillRect(colIndex * BLOCK_SIZE, rowIndex * BLOCK_SIZE, BLOCK_SIZE, BLOCK_SIZE);
+    });
+  });
 }
 
-function checkLineClear() {
-  let clearLine = true
-
-  for (let row = 0; row < 20; row++) {
-    clearLine = true
-    for (let col = 0; col < 10; col++) {
-      if (grid[row][col] === 'EMPTY') {
-        clearLine = false
-        break;
-      }
-    }
-
-    //Execute a line clear
-    if (clearLine) {
-      for (let col = 0; col < 10; col++) {
-        grid[row][col] = 'EMPTY'
-      } 
-      for (let r = row - 1; r >= 0; r--) {
-        grid[r + 1] = [...grid[r]];  // Move row r to row r + 1
-      }
-      grid[0] = new Array(grid[0].length).fill('EMPTY');      
-      score += 400 * level;
-      scoreText.innerHTML = `Score: ${score}`
-      Sounds.lineClearSound.play();
-    }
-  }
-}
-
-
-// Draw current tetrimino
+// Draw the current tetrimino on the canvas
 function drawTetrimino() {
-  for (let row = 0; row < currentTetrimino.shape.length; row++) {
-    for (let col = 0; col < currentTetrimino.shape[row].length; col++) {
-      if (currentTetrimino.shape[row][col] !== 0) {
+  currentTetrimino.shape.forEach((row, rowIndex) => {
+    row.forEach((col, colIndex) => {
+      if (col !== 0) {
         ctx.fillStyle = currentTetrimino.color;
         ctx.fillRect(
-          (currentTetrimino.x + col) * BLOCK_SIZE,
-          (currentTetrimino.y + row) * BLOCK_SIZE,
+          (currentTetrimino.x + colIndex) * BLOCK_SIZE,
+          (currentTetrimino.y + rowIndex) * BLOCK_SIZE,
           BLOCK_SIZE,
           BLOCK_SIZE
         );
       }
-    }
-  }
+    });
+  });
 }
 
-function drawHoldItem() {
-  subCtx.clearRect(0, 0, subCanvas.width, subCanvas.height);
-
-  const tetriminoWidth = holdTetrimino.shape[0].length * 20;  // Width in pixels
-  const tetriminoHeight = holdTetrimino.shape.length * 20;    // Height in pixels
-
-  const offsetX = (subCanvas.width - tetriminoWidth) / 2;    // Center X
-  const offsetY = (subCanvas.height - tetriminoHeight) / 2;  // Center Y
-
-  for (let row = 0; row < holdTetrimino.shape.length; row++) {
-    for (let col = 0; col < holdTetrimino.shape[row].length; col++) {
-      if (holdTetrimino.shape[row][col] !== 0) {
-        subCtx.fillStyle = holdTetrimino.color;
-        subCtx.fillRect(
-          offsetX + (col * 20),  // Centered X
-          offsetY + (row * 20),  // Centered Y
-          20,
-          20
-        );
-      }
-    }
-  }
-}
-
-// Check for collision
+// Handle tetrimino collision
 function collision() {
-  for (let row = 0; row < currentTetrimino.shape.length; row++) {
-    for (let col = 0; col < currentTetrimino.shape[row].length; col++) {
-      if (currentTetrimino.shape[row][col] !== 0) {
-        let newX = currentTetrimino.x + col;
-        let newY = currentTetrimino.y + row;
-        if (
-          newX < 0 ||
-          newX >= COLS ||
-          newY >= ROWS ||
-          grid[newY][newX] !== 'EMPTY'
-        ) {
-          return true;
-        }
-      }
-    }
-  }
-  return false;
+  return currentTetrimino.shape.some((row, rowIndex) => 
+    row.some((col, colIndex) => 
+      col !== 0 && (
+        currentTetrimino.x + colIndex < 0 ||
+        currentTetrimino.x + colIndex >= COLS ||
+        currentTetrimino.y + rowIndex >= ROWS ||
+        grid[currentTetrimino.y + rowIndex][currentTetrimino.x + colIndex] !== 'EMPTY'
+      )
+    )
+  );
 }
 
-// Lock tetrimino into grid
+// Lock the tetrimino into the grid
 function lockTetrimino() {
-  for (let row = 0; row < currentTetrimino.shape.length; row++) {
-    for (let col = 0; col < currentTetrimino.shape[row].length; col++) {
-      if (currentTetrimino.shape[row][col] !== 0) {
-        grid[currentTetrimino.y + row][currentTetrimino.x + col] =
-          currentTetrimino.color;
+  currentTetrimino.shape.forEach((row, rowIndex) => {
+    row.forEach((col, colIndex) => {
+      if (col !== 0) {
+        grid[currentTetrimino.y + rowIndex][currentTetrimino.x + colIndex] = currentTetrimino.color;
       }
-    }
-  }
-  score += 40 * level
+    });
+  });
+  score += 40 * level;
   scoreText.innerHTML = `Score: ${score}`;
   Sounds.pieceDownSound.currentTime = 0;
   Sounds.pieceDownSound.play();
   checkLineClear();
 }
 
-// Move tetrimino down
+// Check and clear lines
+function checkLineClear() {
+  grid.forEach((row, rowIndex) => {
+    if (row.every(col => col !== 'EMPTY')) {
+      grid.splice(rowIndex, 1);
+      grid.unshift(Array(COLS).fill('EMPTY'));
+      score += 400 * level;
+      scoreText.innerHTML = `Score: ${score}`;
+      Sounds.lineClearSound.play();
+    }
+  });
+}
+
+// Move the tetrimino down by 1
 function moveTetrimino() {
   currentTetrimino.y++;
   if (collision()) {
     currentTetrimino.y--;
     lockTetrimino();
     holdUsed = false;
-    let randomIndex = Math.floor(Math.random() * TETRIMINOS.length);
-    currentTetrimino = {
-      shape: TETRIMINOS[randomIndex],
-      x: Math.floor(COLS / 2) - 1,
-      y: 0,
-      color: COLORS[randomIndex % 10],
-    };
+    currentTetrimino = generateRandomTetrimino();
   }
 }
 
+// Handle tetrimino rotation
+function rotateTetrimino() {
+  const rotatedShape = currentTetrimino.shape[0].map((_, index) => 
+    currentTetrimino.shape.map(row => row[index])
+  ).reverse();
+  const originalShape = currentTetrimino.shape;
+  currentTetrimino.shape = rotatedShape;
+
+  if (collision()) {
+    currentTetrimino.shape = originalShape;
+  }
+}
+
+// Swap tetrimino with held tetrimino
+function swapTetrimino() {
+  if (holdUsed) return;
+
+  if (holdTetrimino.shape === 0) {
+    holdTetrimino = { ...currentTetrimino };
+    currentTetrimino = generateRandomTetrimino();
+  } else {
+    [holdTetrimino, currentTetrimino] = [currentTetrimino, holdTetrimino];
+    currentTetrimino.x = Math.floor(COLS / 2) - 1;
+    currentTetrimino.y = 0;
+  }
+
+  drawHoldItem();
+  holdUsed = true;
+}
+
+// Draw the held tetrimino on the submenu canvas
+function drawHoldItem() {
+  subCtx.clearRect(0, 0, subCanvas.width, subCanvas.height);
+
+  const width = holdTetrimino.shape[0].length * 20;
+  const height = holdTetrimino.shape.length * 20;
+
+  const offsetX = (subCanvas.width - width) / 2;
+  const offsetY = (subCanvas.height - height) / 2;
+
+  holdTetrimino.shape.forEach((row, rowIndex) => {
+    row.forEach((col, colIndex) => {
+      if (col !== 0) {
+        subCtx.fillStyle = holdTetrimino.color;
+        subCtx.fillRect(
+          offsetX + (colIndex * 20),
+          offsetY + (rowIndex * 20),
+          20,
+          20
+        );
+      }
+    });
+  });
+}
+
+// Game loop
+function gameLoop() {
+  if (!gameRunning) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawGrid();
+  drawTetrimino();
+  moveTetrimino();
+  checkGameOver();
+
+  setTimeout(gameLoop, gameSpeed); // Adjust speed by changing the timeout
+}
+
+// Check for game over
+function checkGameOver() {
+  if (grid[0].some(col => col !== 'EMPTY')) {
+    gameRunning = false;
+    Sounds.bgMusic.pause();
+    Sounds.gameOverSound.play();
+    ssMenu.style.display = "flex";
+  }
+}
 
 // Handle user input
 document.addEventListener('keydown', (event) => {
@@ -275,27 +254,29 @@ document.addEventListener('keydown', (event) => {
     currentTetrimino.x--;
     if (collision()) currentTetrimino.x++; // Revert if collision
   }
+
   if (event.key === "ArrowRight" || event.key === "d") {
     currentTetrimino.x++;
     if (collision()) currentTetrimino.x--; // Revert if collision
   }
+
   if (event.key === "ArrowDown" || event.key === "s") {
     currentTetrimino.y++;
     if (collision()) currentTetrimino.y--; // Revert if collision
   }
+
   if (event.key === "ArrowUp" || event.key === "w") {
     rotateTetrimino();
   }
+
   if (event.key === " ") {
     swapTetrimino();
   }
 
-
-  // Redraw the game immediately after moving
-  draw();
+  draw(); // Redraw the game immediately after moving
 });
 
-//Start/Pause button
+// Toggle game pause with "p" key
 document.addEventListener('keydown', (event) => {
   if (event.key === "p") {
     gameRunning = !gameRunning;
@@ -303,62 +284,18 @@ document.addEventListener('keydown', (event) => {
   }
 });
 
-// Function to draw the grid and Tetrimino (moved from gameLoop)
+// Draw the game (grid + tetrimino)
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawGrid();
   drawTetrimino();
 }
 
-// Rotate tetrimino
-function rotateTetrimino() {
-  let shape = currentTetrimino.shape;
-  currentTetrimino.shape = currentTetrimino.shape[0]
-    .map((_, index) => currentTetrimino.shape.map(row => row[index]))
-    .reverse();
-  if (collision()) {
-    currentTetrimino.shape = shape;
-  }
-}
-
-let ssMenu = document.querySelector(".submit-score-menu")
-
-function checkGameOver() {
-  if (grid[0][5] !== 'EMPTY' || grid[0][4] !== 'EMPTY' || grid[0][6] !== 'EMPTY') {
-      gameRunning = false;
-      Sounds.bgMusic.pause();
-      Sounds.gameOverSound.play();
-      ssMenu.style.display = "flex"
-  }
-}
-
-
-let gameSpeed = 600;
-let gameRunning = false;
-
-function increaseLevel() {
+// Increase level every 30 seconds
+setInterval(() => {
   level += 1;
-  levelText.innerHTML = `Level: ${level}`
+  levelText.innerHTML = `Level: ${level}`;
   if (gameSpeed > 25) {
     gameSpeed -= 50;
-  } 
-}
-
-setInterval(increaseLevel, 30000);
-
-// Game loop
-function gameLoop() {
-  if (!gameRunning) return;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  drawGrid();
-  drawTetrimino();
-  moveTetrimino();
-  checkGameOver();
-  setTimeout(gameLoop, gameSpeed); // Adjust speed by changing the timeout
-}
-
-gameLoop();
-
-
-
-
+  }
+}, 30000);
