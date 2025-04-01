@@ -38,7 +38,8 @@ body {
 
 
 .menu,
-.submit-score-menu {
+.submit-score-menu,
+.mode-menu {
     position: absolute;
     display: flex;
     flex-direction: column;  /* Stack buttons vertically */
@@ -48,6 +49,10 @@ body {
 
 .menu {
     display: flex;
+}
+
+.mode-menu {
+    display: none;
 }
 
 .submit-score-menu {
@@ -131,7 +136,7 @@ canvas {
 }
 
 .mute-button {
-    width: 100px;
+    width: 105px;
     margin: 4px;
     border: solid rgb(255, 255, 255);
     background-color: rgb(255, 67, 208);

@@ -17,7 +17,6 @@ export class Tetromino {
     const rotatedShape = this.shape[0].map((_, index) =>
       this.shape.map(row => row[index])
     ).reverse();
-    const originalShape = this.shape;
     this.shape = rotatedShape;
     return this.shape;
   }

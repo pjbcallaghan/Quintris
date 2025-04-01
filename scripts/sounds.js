@@ -5,9 +5,11 @@ export class Sounds {
   static pieceDownSound = document.getElementById("piece-down");
 
   static muteButton = document.querySelector(".js-mute-music");
+  static muteSounds = document.querySelector(".js-mute-sounds");
 
   static init() {
-    this.muteButton.addEventListener("click", () => this.toggleAudio());
+    this.muteButton.addEventListener("click", () => this.toggleMusic());
+    this.muteSounds.addEventListener("click", () => this.toggleSounds());
 
     // For gapless audio looping
     this.bgMusic.addEventListener('timeupdate', function () {
@@ -19,7 +21,7 @@ export class Sounds {
     });
   }
 
-  static toggleAudio() {
+  static toggleMusic() {
     if (!this.bgMusic.muted) {
       this.bgMusic.muted = true;
       this.muteButton.innerHTML = "Unmute Music"
@@ -28,4 +30,19 @@ export class Sounds {
       this.muteButton.innerHTML = "Mute Music"
     }
   }
+
+  static toggleSounds() {
+    if (!this.lineClearSound.muted) {
+      this.lineClearSound.muted = true;
+      this.gameOverSound.muted = true;
+      this.pieceDownSound.muted = true;
+      this.muteSounds.innerHTML = "Unmute Sounds"
+    } else {
+      this.lineClearSound.muted = false;
+      this.gameOverSound.muted = false;
+      this.pieceDownSound.muted = false;
+      this.muteSounds.innerHTML = "Mute Sounds"
+    }
+  }
+
 }

@@ -1,29 +1,30 @@
-import { classic, quintris, hextris } from "./shapes.js";
-import { Sounds } from "../sounds.js";
+import { Sounds } from "./sounds.js";
 import { UI } from "./ui.js";
 import { Grid } from "./grid.js";
 import { Tetromino } from "./tetromino.js";
-import { canvas, ctx, subCanvas, subCtx, cols, rows, blockSize, colors} from "./constants.js"
+import { canvas, ctx, subCanvas, subCtx, cols, rows, blockSize, colors } from "./constants.js"
 
 export class Game {
   constructor() {
     this.ui = new UI();
     this.grid = new Grid(cols, rows);
-    this.tetrominos = classic;
+    this.tetrominos = this.ui.gameMode;
     this.currentTetromino = Tetromino.generateRandom(this.tetrominos, colors);
     this.holdTetromino = new Tetromino(0, 0, 0, 0);
     this.holdUsed = false;
     this.score = 0;
     this.level = 1;
-    this.gameSpeed = 600;
+    this.gameSpeed = 750;
     this.gameRunning = false;
 
+    this.ui.bindEvents();
     this.ui.bindStartGame(() => this.startGame());
-  }
-
-  startGame() {
     Sounds.init();
+  }
+  
+  startGame() {
     Sounds.bgMusic.play();
+    this.tetrominos = this.ui.gameMode;
     this.ui.showMenu();
     this.grid.reset();
     this.score = 0;
@@ -32,6 +33,7 @@ export class Game {
     this.ui.updateScore(this.score);
     this.ui.updateLevel(this.level);
     this.currentTetromino = Tetromino.generateRandom(this.tetrominos, colors);
+    setInterval(() => this.increaseLevel(), 30000);
     this.gameLoop();
   }
 
@@ -56,8 +58,16 @@ export class Game {
       this.ui.updateScore(this.score);
       this.grid.clearLine();
       this.currentTetromino = Tetromino.generateRandom(this.tetrominos, colors);
-      this.holdUsed = false;  
+      this.holdUsed = false;
     }
+  }
+
+  increaseLevel() {
+    this.level += 1;
+    this.ui.updateLevel(this.level);
+    if (this.gameSpeed > 25) {
+      this.gameSpeed -= 50;
+    };
   }
 
   rotateTetromino() {
@@ -71,7 +81,7 @@ export class Game {
   swapTetromino() {
     if (this.holdUsed) return;
     if (this.holdTetromino.color === 0) {
-      this.holdTetromino = this.currentTetromino 
+      this.holdTetromino = this.currentTetromino
       this.holdTetromino.resetPosition();
       this.currentTetromino = Tetromino.generateRandom(this.tetrominos, colors)
     } else {
@@ -80,7 +90,7 @@ export class Game {
       this.holdTetromino = temp;
       this.holdTetromino.resetPosition();
     }
-    this.holdUsed = true;  
+    this.holdUsed = true;
   }
 
   drawHold() {
@@ -122,8 +132,8 @@ export class Game {
 
   checkGameOver() {
     if (
-      this.grid.getGrid()[0][4] !== 'EMPTY' || 
-      this.grid.getGrid()[0][5] !== 'EMPTY' || 
+      this.grid.getGrid()[0][4] !== 'EMPTY' ||
+      this.grid.getGrid()[0][5] !== 'EMPTY' ||
       this.grid.getGrid()[0][6] !== 'EMPTY'
     ) {
       this.gameRunning = false;

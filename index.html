@@ -24,8 +24,14 @@ Create different game modes
 
         <div class="menu">
           <button class="menu-button js-start-game-button">Start Game</button>
-          <button class="menu-button">Select Mode</button>
-          <button class="menu-button">View Leaderboards</button>
+          <button class="menu-button js-select-mode-button">Select Mode</button>
+          <button class="menu-button js-view-lb-button">View Leaderboards</button>
+        </div>
+
+        <div class="mode-menu">
+          <button class="menu-button js-quintris-button">Quintris</button>
+          <button class="menu-button js-classic-button" >Classic</button>
+          <button class="menu-button js-hextris-button">Hextris</button>
         </div>
 
         <div class="submit-score-menu">
@@ -33,17 +39,6 @@ Create different game modes
           <button class="ss-menu-button">Submit Score</button>
           <button class="ss-menu-button">View Leaderboard</button>
           <button class="ss-menu-button" onclick="startGame()">Play Again</button>
-        </div>
-
-        <!-- <div class="mode-menu">
-          <button class="ss-menu-button">Quintris</button>
-          <button class="ss-menu-button">Classic</button>
-          <button class="ss-menu-button">Hextris</button>
-        </div> -->
-
-
-        <div class="gameModeMenu">
-
         </div>
 
         <div class ="level-text">Level: 1</div> 
@@ -58,7 +53,7 @@ Create different game modes
 
     <div class="mute-buttons">
       <button class="mute-button js-mute-music">Mute Music</button>
-      <button class="mute-button">Mute Sounds</button>
+      <button class="mute-button js-mute-sounds">Mute Sounds</button>
      </div>
 
     <audio class="bgMusic" src="sounds/tetris-loop.mp3" loop></audio>

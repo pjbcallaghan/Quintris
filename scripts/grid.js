@@ -1,4 +1,4 @@
-import { Sounds } from "../sounds.js";
+import { Sounds } from "./sounds.js";
 
 export class Grid {
   constructor(cols, rows) {
