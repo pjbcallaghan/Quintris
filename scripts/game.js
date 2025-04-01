@@ -1,161 +1,11 @@
-import { classic, quintris, hextris } from "./shape-collections.js";
-import { Sounds } from "./sounds.js";
+import { classic, quintris, hextris } from "./shapes.js";
+import { Sounds } from "../sounds.js";
+import { UI } from "./ui.js";
+import { Grid } from "./grid.js";
+import { Tetromino } from "./tetromino.js";
+import { canvas, ctx, subCanvas, subCtx, cols, rows, blockSize, colors} from "./constants.js"
 
-// Initialize sounds
-Sounds.init();
-
-// Canvases and contexts
-const canvas = document.getElementById('gameCanvas');
-const ctx = canvas.getContext('2d');
-const subCanvas = document.getElementById('hold-menu');
-const subCtx = subCanvas.getContext('2d');
-
-
-// Constants
-const cols = 10;
-const rows = 20;
-const blockSize = 30;
-const colors = [
-  '#FF5733', '#33FF57', '#3357FF', '#FF33A1', '#FFD633', '#00d5ff',
-  '#9B33FF', '#a60000', '#19a600', '#0007d9',
-];
-
-// UI Class
-class UI {
-  constructor() {
-    this.scoreText = document.querySelector(".score-text");
-    this.levelText = document.querySelector(".level-text");
-    this.menu = document.querySelector(".menu");
-    this.ssMenu = document.querySelector(".submit-score-menu");
-    this.startGameButton = document.querySelector('.js-start-game-button');
-  }
-
-  updateScore(score) {
-    this.scoreText.innerHTML = `Score: ${score}`;
-  }
-
-  updateLevel(level) {
-    this.levelText.innerHTML = `Level: ${level}`;
-  }
-
-  showMenu() {
-    this.menu.style.display = "none";
-    this.ssMenu.style.display = "none";
-  }
-
-  showGameOver() {
-    this.ssMenu.style.display = "flex";
-  }
-
-  bindStartGame(callback) {
-    this.startGameButton.addEventListener('click', callback);
-  }
-}
-
-// Grid Class
-class Grid {
-  constructor(cols, rows) {
-    this.cols = cols;
-    this.rows = rows;
-    this.grid = Array.from({ length: rows }, () => Array(cols).fill('EMPTY'));
-  }
-
-  reset() {
-    this.grid = Array.from({ length: this.rows }, () => Array(this.cols).fill('EMPTY'));
-  }
-
-  draw(ctx, blockSize) {
-    this.grid.forEach((row, rowIndex) => {
-      row.forEach((col, colIndex) => {
-        ctx.fillStyle = col === 'EMPTY' ? '#000' : col;
-        ctx.fillRect(colIndex * blockSize, rowIndex * blockSize, blockSize, blockSize);
-      });
-    });
-  }
-
-  clearLine() {
-    this.grid.forEach((row, rowIndex) => {
-      if (row.every(col => col !== 'EMPTY')) {
-        this.grid.splice(rowIndex, 1);
-        this.grid.unshift(Array(this.cols).fill('EMPTY'));
-        Sounds.lineClearSound.play();
-      }
-    });
-  }
-
-  lockTetromino(tetromino) {
-    tetromino.shape.forEach((row, rowIndex) => {
-      row.forEach((col, colIndex) => {
-        if (col !== 0) {
-          this.grid[tetromino.y + rowIndex][tetromino.x + colIndex] = tetromino.color;
-          Sounds.pieceDownSound.currentTime = 0;
-          Sounds.pieceDownSound.play();
-        }
-      });
-    });
-  }
-
-  checkCollision(tetromino) {
-    return tetromino.shape.some((row, rowIndex) =>
-      row.some((col, colIndex) =>
-        col !== 0 && (
-          tetromino.x + colIndex < 0 ||
-          tetromino.x + colIndex >= this.cols ||
-          tetromino.y + rowIndex >= this.rows ||
-          this.grid[tetromino.y + rowIndex][tetromino.x + colIndex] !== 'EMPTY'
-        )
-      )
-    );
-  }
-
-  getGrid() {
-    return this.grid;
-  }
-}
-
-// Tetrimino Class
-class Tetromino {
-  constructor(shape, x, y, color) {
-    this.shape = shape;
-    this.x = x;
-    this.y = y;
-    this.color = color;
-  }
-
-  static generateRandom(tetrominos, colors) {
-    const randomIndex = Math.floor(Math.random() * tetrominos.length);
-    return new Tetromino(tetrominos[randomIndex], Math.floor(cols / 2) - 1, 0, colors[randomIndex % 10]);
-  }
-
-  rotate() {
-    const rotatedShape = this.shape[0].map((_, index) =>
-      this.shape.map(row => row[index])
-    ).reverse();
-    const originalShape = this.shape;
-    this.shape = rotatedShape;
-    return this.shape;
-  }
-
-  moveDown() {
-    this.y++;
-  }
-
-  moveLeft() {
-    this.x--;
-  }
-
-  moveRight() {
-    this.x++;
-  }
-
-  resetPosition() {
-    this.x = Math.floor(cols / 2) - 1;
-    this.y = 0;
-  }
-}
-
-// Game Class
-class Game {
+export class Game {
   constructor() {
     this.ui = new UI();
     this.grid = new Grid(cols, rows);
@@ -172,6 +22,7 @@ class Game {
   }
 
   startGame() {
+    Sounds.init();
     Sounds.bgMusic.play();
     this.ui.showMenu();
     this.grid.reset();
@@ -248,7 +99,7 @@ class Game {
             20,
             20
           );
-        }
+        };
       });
     });
   }
@@ -333,11 +184,3 @@ class Game {
     }
   }
 }
-
-// Initialize the game
-const game = new Game();
-
-// Event listener for keyboard input
-document.addEventListener('keydown', (event) => {
-  game.handleInput(event);
-});

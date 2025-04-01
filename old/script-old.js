@@ -1,5 +1,5 @@
-import { classic, quintris, hextris } from "./shape-collections.js";
-import { Sounds } from "./sounds.js";
+import { classic, quintris, hextris } from "../shape-collections.js";
+import { Sounds } from "../sounds.js";
 Sounds.init();
 
 //Canvases
