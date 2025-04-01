@@ -83,11 +83,11 @@ class Grid {
     });
   }
 
-  lockTetrimino(tetrimino) {
-    tetrimino.shape.forEach((row, rowIndex) => {
+  lockTetromino(tetromino) {
+    tetromino.shape.forEach((row, rowIndex) => {
       row.forEach((col, colIndex) => {
         if (col !== 0) {
-          this.grid[tetrimino.y + rowIndex][tetrimino.x + colIndex] = tetrimino.color;
+          this.grid[tetromino.y + rowIndex][tetromino.x + colIndex] = tetromino.color;
           Sounds.pieceDownSound.currentTime = 0;
           Sounds.pieceDownSound.play();
         }
@@ -95,14 +95,14 @@ class Grid {
     });
   }
 
-  checkCollision(tetrimino) {
-    return tetrimino.shape.some((row, rowIndex) =>
+  checkCollision(tetromino) {
+    return tetromino.shape.some((row, rowIndex) =>
       row.some((col, colIndex) =>
         col !== 0 && (
-          tetrimino.x + colIndex < 0 ||
-          tetrimino.x + colIndex >= this.cols ||
-          tetrimino.y + rowIndex >= this.rows ||
-          this.grid[tetrimino.y + rowIndex][tetrimino.x + colIndex] !== 'EMPTY'
+          tetromino.x + colIndex < 0 ||
+          tetromino.x + colIndex >= this.cols ||
+          tetromino.y + rowIndex >= this.rows ||
+          this.grid[tetromino.y + rowIndex][tetromino.x + colIndex] !== 'EMPTY'
         )
       )
     );
@@ -114,7 +114,7 @@ class Grid {
 }
 
 // Tetrimino Class
-class Tetrimino {
+class Tetromino {
   constructor(shape, x, y, color) {
     this.shape = shape;
     this.x = x;
@@ -122,9 +122,9 @@ class Tetrimino {
     this.color = color;
   }
 
-  static generateRandom(tetriminos, colors) {
-    const randomIndex = Math.floor(Math.random() * tetriminos.length);
-    return new Tetrimino(tetriminos[randomIndex], Math.floor(cols / 2) - 1, 0, colors[randomIndex % 10]);
+  static generateRandom(tetrominos, colors) {
+    const randomIndex = Math.floor(Math.random() * tetrominos.length);
+    return new Tetromino(tetrominos[randomIndex], Math.floor(cols / 2) - 1, 0, colors[randomIndex % 10]);
   }
 
   rotate() {
@@ -159,9 +159,9 @@ class Game {
   constructor() {
     this.ui = new UI();
     this.grid = new Grid(cols, rows);
-    this.tetriminos = classic; // Default Tetriminos
-    this.currentTetrimino = Tetrimino.generateRandom(this.tetriminos, colors);
-    this.holdTetrimino = new Tetrimino(0, 0, 0, 0);
+    this.tetrominos = classic;
+    this.currentTetromino = Tetromino.generateRandom(this.tetrominos, colors);
+    this.holdTetromino = new Tetromino(0, 0, 0, 0);
     this.holdUsed = false;
     this.score = 0;
     this.level = 1;
@@ -180,7 +180,7 @@ class Game {
     this.gameRunning = true;
     this.ui.updateScore(this.score);
     this.ui.updateLevel(this.level);
-    this.currentTetrimino = Tetrimino.generateRandom(this.tetriminos, colors);
+    this.currentTetromino = Tetromino.generateRandom(this.tetrominos, colors);
     this.gameLoop();
   }
 
@@ -189,50 +189,78 @@ class Game {
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     this.grid.draw(ctx, blockSize);
-    this.drawTetrimino();
-    this.moveTetrimino();
+    this.drawTetromino();
+    this.moveTetromino();
     this.checkGameOver();
 
     setTimeout(() => this.gameLoop(), this.gameSpeed);
   }
 
-  moveTetrimino() {
-    this.currentTetrimino.moveDown();
-    if (this.grid.checkCollision(this.currentTetrimino)) {
-      this.currentTetrimino.y--;
-      this.grid.lockTetrimino(this.currentTetrimino);
+  moveTetromino() {
+    this.currentTetromino.moveDown();
+    if (this.grid.checkCollision(this.currentTetromino)) {
+      this.currentTetromino.y--;
+      this.grid.lockTetromino(this.currentTetromino);
       this.score += 40 * this.level;
       this.ui.updateScore(this.score);
       this.grid.clearLine();
-      this.currentTetrimino = Tetrimino.generateRandom(this.tetriminos, colors);
+      this.currentTetromino = Tetromino.generateRandom(this.tetrominos, colors);
+      this.holdUsed = false;  
     }
   }
 
-  rotateTetrimino() {
-    const originalShape = this.currentTetrimino.shape;
-    this.currentTetrimino.rotate();
-    if (this.grid.checkCollision(this.currentTetrimino)) {
-      this.currentTetrimino.shape = originalShape;
+  rotateTetromino() {
+    const originalShape = this.currentTetromino.shape;
+    this.currentTetromino.rotate();
+    if (this.grid.checkCollision(this.currentTetromino)) {
+      this.currentTetromino.shape = originalShape;
     }
   }
 
-  swapTetrimino() {
+  swapTetromino() {
     if (this.holdUsed) return;
-    const temp = this.currentTetrimino;
-    this.currentTetrimino = this.holdTetrimino;
-    this.holdTetrimino = temp;
-    this.holdTetrimino.resetPosition();
-    this.holdUsed = true;
+    if (this.holdTetromino.color === 0) {
+      this.holdTetromino = this.currentTetromino 
+      this.holdTetromino.resetPosition();
+      this.currentTetromino = Tetromino.generateRandom(this.tetrominos, colors)
+    } else {
+      const temp = this.currentTetromino;
+      this.currentTetromino = this.holdTetromino;
+      this.holdTetromino = temp;
+      this.holdTetromino.resetPosition();
+    }
+    this.holdUsed = true;  
   }
 
-  drawTetrimino() {
-    this.currentTetrimino.shape.forEach((row, rowIndex) => {
+  drawHold() {
+    subCtx.clearRect(0, 0, subCanvas.width, subCanvas.height);
+    const tetrominoWidth = this.holdTetromino.shape[0].length * 20;  // Width in pixels
+    const tetrominoHeight = this.holdTetromino.shape.length * 20;    // Height in pixels
+    const offsetX = (subCanvas.width - tetrominoWidth) / 2;    // Center X
+    const offsetY = (subCanvas.height - tetrominoHeight) / 2;  // Center Y
+    this.holdTetromino.shape.forEach((row, rowIndex) => {
       row.forEach((col, colIndex) => {
         if (col !== 0) {
-          ctx.fillStyle = this.currentTetrimino.color;
+          subCtx.fillStyle = this.holdTetromino.color;
+          subCtx.fillRect(
+            offsetX + (colIndex * 20),
+            offsetY + (rowIndex * 20),
+            20,
+            20
+          );
+        }
+      });
+    });
+  }
+
+  drawTetromino() {
+    this.currentTetromino.shape.forEach((row, rowIndex) => {
+      row.forEach((col, colIndex) => {
+        if (col !== 0) {
+          ctx.fillStyle = this.currentTetromino.color;
           ctx.fillRect(
-            (this.currentTetrimino.x + colIndex) * blockSize,
-            (this.currentTetrimino.y + rowIndex) * blockSize,
+            (this.currentTetromino.x + colIndex) * blockSize,
+            (this.currentTetromino.y + rowIndex) * blockSize,
             blockSize,
             blockSize
           );
@@ -242,7 +270,11 @@ class Game {
   }
 
   checkGameOver() {
-    if (this.grid.getGrid()[0].some(col => col !== 'EMPTY')) {
+    if (
+      this.grid.getGrid()[0][4] !== 'EMPTY' || 
+      this.grid.getGrid()[0][5] !== 'EMPTY' || 
+      this.grid.getGrid()[0][6] !== 'EMPTY'
+    ) {
       this.gameRunning = false;
       Sounds.bgMusic.pause();
       Sounds.gameOverSound.play();
@@ -251,50 +283,52 @@ class Game {
   }
 
   handleInput(event) {
+    if (event.key === "p") {
+      this.gameRunning = !this.gameRunning;
+      this.gameLoop();
+    }
+
+    if (!this.gameRunning) { return }
     switch (event.key) {
       case "ArrowLeft":
       case "a":
-        this.currentTetrimino.moveLeft();
-        if (this.grid.checkCollision(this.currentTetrimino)) {
-          this.currentTetrimino.x++;
+        this.currentTetromino.moveLeft();
+        if (this.grid.checkCollision(this.currentTetromino)) {
+          this.currentTetromino.x++;
         }
         this.grid.draw(ctx, blockSize);
-        this.drawTetrimino();
+        this.drawTetromino();
         break;
 
       case "ArrowRight":
       case "d":
-        this.currentTetrimino.moveRight();
-        if (this.grid.checkCollision(this.currentTetrimino)) {
-          this.currentTetrimino.x--;
+        this.currentTetromino.moveRight();
+        if (this.grid.checkCollision(this.currentTetromino)) {
+          this.currentTetromino.x--;
         }
         this.grid.draw(ctx, blockSize);
-        this.drawTetrimino();
+        this.drawTetromino();
         break;
 
       case "ArrowDown":
       case "s":
-        this.moveTetrimino();
+        this.moveTetromino();
         this.grid.draw(ctx, blockSize);
-        this.drawTetrimino();
+        this.drawTetromino();
         break;
 
       case "ArrowUp":
       case "w":
-        this.rotateTetrimino();
+        this.rotateTetromino();
         this.grid.draw(ctx, blockSize);
-        this.drawTetrimino();
+        this.drawTetromino();
         break;
 
       case " ":
-        this.swapTetrimino();
+        this.swapTetromino();
         this.grid.draw(ctx, blockSize);
-        this.drawTetrimino();
-        break;
-
-      case "p":
-        this.gameRunning = !this.gameRunning;
-        this.gameLoop();
+        this.drawTetromino();
+        this.drawHold();
         break;
     }
   }
