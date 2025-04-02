@@ -1,204 +1,128 @@
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     color: white;
-
+    background-color: #505050;
     display: flex;
-    flex-direction: column;  /* Stacks elements vertically */
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     height: 100vh;
     margin: 0;
-    background-color: #505050;
 }
 
-.hold-menu {
+/* General Button Styling */
+button, .menu-button, .scoreboard-button, .leaderboard-back-button, .ss-menu-button, .mute-button {
+    border: solid white;
+    background-color: rgb(255, 67, 208);
+    border-radius: 8px;
+    color: white;
+    font-size: 14px;
+    padding: 6px 12px;
+    cursor: pointer;
+    margin: 4px;
+    text-align: center;
+}
+
+button:hover, .menu-button:hover, .leaderboard-back-button:hover, .scoreboard-button:hover, .ss-menu-button:hover {
+    background-color: rgb(255, 0, 191);
+}
+
+button:active, .ss-menu-button:active {
+    background-color: rgb(255, 0, 157);
+}
+
+/* Menus */
+.menu, .submit-score-menu, .mode-menu, .leaderboard {
     position: absolute;
-    left: 95.5%;
-    margin: 6px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: center;
 }
 
-#hold-menu {
-    border-left:#000000
+.menu { display: flex; }
+.mode-menu, .submit-score-menu, .leaderboard { display: none; }
+
+/* Leaderboard */
+.leaderboard-entry {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    
 }
 
+.user-rank, .user-name, .user-score {
+    margin: 4px;
+    padding: 6px;
+    font-size: 14px;
+    background-color: rgb(255, 67, 208);
+    border: solid white;
+    border-radius: 8px;
+
+
+}
+
+.user-rank { width: 30px; }
+.user-name { width: 100px; text-align: left; }
+.user-score { width: 75px; text-align: right; }
+
+/* Page Controls */
+.page-control {
+    display: flex;
+    margin-left: auto;
+}
+
+/* Game Area */
 .game-area {
     display: flex;
     position: relative;
 }
 
 .gameBoard {
-    position: relative;
-    align-items: end;
     display: flex;
     align-items: center;
-    justify-content: center;  /* Centers horizontally */
+    justify-content: center;
     margin: 6px;
-
-}
-
-
-.menu,
-.submit-score-menu,
-.mode-menu,
-.leaderboard {
-    position: absolute;
-    display: flex;
-    flex-direction: column;  /* Stack buttons vertically */
-    align-items: stretch;    /* Make all buttons the same width */
-    justify-content: center;   
-}
-
-.menu {
-    display: flex;
-}
-
-.mode-menu {
-    display: none;
-}
-
-.submit-score-menu {
-    display: none;
-}
-
-.leaderboard {
-    display: none;
-}
-
-
-.menu-button,
-.user-score,
-.user-rank,
-.user-name,
-.scoreboard-button,
-.leaderboard-back-button  {
-    margin: 12px;
-    border: solid rgb(255, 255, 255);
-    background-color: rgb(255, 67, 208);
-    border-radius: 8px;
-    font-size: 20px;
-    padding: 12px;
-    color: white;
-    text-align: center;
-}
-
-.leaderboard-entry {
-    display: flex;
-    position: relative;
-    flex-direction: row;
-}
-
-.page-control {
-    margin-left: auto;
-    display: flex; /* Keeps buttons in a row */
-}
-
-.user-score,
-.user-rank,
-.user-name,
-.scoreboard-button,
-.leaderboard-back-button {
-    margin: 4px;
-    font-size: 14px;
-    padding: 6px;
-}
-
-
-.scoreboard-button {
-    padding-left: 15px;
-    padding-right: 14px;
-
-}
-
-.user-rank {
-    width: 30px;
-}
-
-.user-name {
-    width: 100px;
-    text-align: left;
-}
-
-.user-score {
-    text-align: right;
-    width: 75px;
-}
-
-
-.menu-button:hover,
-.leaderboard-back-button:hover,
-.scoreboard-button:hover {
-    background-color: rgb(255, 0, 191);
-}
-
-.score-text {
-    position: absolute;
-    align-items: end;
-    top: 30px;
-    left: 10px;
-}
-
-.level-text {
-    position: absolute;
-    align-items: end;
-    top: 10px;
-    left: 10px;
-}
-
-canvas {
-    border: 2px solid hsl(0, 0%, 100%);
-    background-color: #000000;
     position: relative;
 }
 
-.logo {
-    height: 90px;
-    margin-left: -8px;
+/* Score & Level Text */
+.score-text, .level-text {
+    position: absolute;
+    left: 10px;
 }
 
-.ss-menu-button {
-    margin: 10px;
-    border: solid rgb(255, 255, 255);
-    background-color: rgb(255, 67, 208);
-    border-radius: 8px;
-    font-size: 12px;
-    padding: 6px;
-    color: white;
-}
+.score-text { top: 30px; }
+.level-text { top: 10px; }
 
-.ss-menu-button:hover {
-    background-color: rgb(255, 0, 191);
-}
-
-.ss-menu-button:active {
-    background-color: rgb(255, 0, 157);
-}
-
-
-.ss-menu-button {
-    margin: 4px;
-    font-size: 12px;
-}
-
-.ss-input {
-    margin: 4px;
-}
-
+/* Input Fields */
 .ss-input {
     font-size: 12px;
     border-radius: 10px;
     padding: 6px;
     border: solid;
-    color:rgb(255, 23, 197);
-}
-
-.mute-button {
-    width: 105px;
+    color: rgb(255, 23, 197);
     margin: 4px;
-    border: solid rgb(255, 255, 255);
-    background-color: rgb(255, 67, 208);
-    border-radius: 8px;
-    font-size: 12px;
-    padding: 6px;
-    color: white;
 }
 
+/* Hold Menu */
+.hold-menu {
+    position: absolute;
+    left: 95.5%;
+    margin: 6px;
+}
+
+#hold-menu { border-left: #000000; }
+
+/* Canvas */
+canvas {
+    border: 2px solid white;
+    background-color: black;
+    position: relative;
+}
+
+/* Logo */
+.logo {
+    height: 90px;
+    margin-left: -8px;
+}

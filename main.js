@@ -1,9 +1,9 @@
 import { Game } from "./scripts/game.js";
 
-// Event listener for keyboard input
+const game = new Game();
+
 document.addEventListener('keydown', (event) => {
   game.handleInput(event);
 });
 
-const game = new Game();
 
