@@ -29,23 +29,12 @@
         <div class="submit-score-menu">
           <input type="text" placeholder="Enter your name" class="ss-input">
           <button class="ss-menu-button js-submit-score">Submit Score</button>
-          <button class="ss-menu-button">View Leaderboard</button>
+          <button class="ss-menu-button js-view-lb-button">View Leaderboard</button>
           <button class="ss-menu-button js-play-again">Play Again</button>
         </div>
 
         <div class="leaderboard">
           <div class="leaderboard-entries">
-            <div class="leaderboard-entry">
-              <div class="user-rank">
-                1
-              </div>
-              <div class="user-name">
-                Johnny 
-              </div>
-              <div class="user-score">
-                999999 
-              </div>
-            </div>
           </div>
 
           <div class="self-and-page-control">
@@ -57,15 +46,15 @@
                 The Self 
               </div>  
               <div class="page-control">
-                <button class="scoreboard-button">
+                <button class="scoreboard-button" id="scoreboard-button-next">
                   <
                 </button>
-                <button class="scoreboard-button">
+                <button class="scoreboard-button" id="scoreboard-button-back">
                   >
                 </button>
             </div>  
           </div>
-          <button class="back-button">Back</button>
+          <button class="leaderboard-back-button">Back</button>
           </div>
         </div>
 

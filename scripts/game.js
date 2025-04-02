@@ -2,13 +2,14 @@ import { Sounds } from "./sounds.js";
 import { UI } from "./ui.js";
 import { Grid } from "./grid.js";
 import { Tetromino } from "./tetromino.js";
+import { classic, quintris, hextris } from "./shapes.js";
 import { canvas, ctx, subCanvas, subCtx, cols, rows, blockSize, colors } from "./constants.js"
 
 export class Game {
   constructor() {
     this.ui = new UI();
     this.grid = new Grid(cols, rows);
-    this.tetrominos = this.ui.gameMode;
+    this.tetrominos = [...classic, ...quintris];
     this.currentTetromino = Tetromino.generateRandom(this.tetrominos, colors);
     this.holdTetromino = new Tetromino(0, 0, 0, 0);
     this.holdUsed = false;
@@ -25,7 +26,15 @@ export class Game {
   startGame() {
     Sounds.bgMusic.currentTime = 0;
     Sounds.bgMusic.play();
-    this.tetrominos = this.ui.gameMode;
+    switch (this.ui.gameMode) {
+      case 'Classic':
+        this.tetrominos = classic;
+      case 'Quintris':
+        this.tetrominos = [...classic, ...quintris];
+      case 'Hextris':
+        this.tetrominos = [...classic, ...quintris, ...hextris];
+    }
+    this.ui.gameOver = false;
     this.ui.showMenu();
     this.grid.reset();
     this.score = 0;

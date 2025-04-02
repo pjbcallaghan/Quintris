@@ -70,7 +70,7 @@ body {
 .user-rank,
 .user-name,
 .scoreboard-button,
-.back-button  {
+.leaderboard-back-button  {
     margin: 12px;
     border: solid rgb(255, 255, 255);
     background-color: rgb(255, 67, 208);
@@ -96,7 +96,7 @@ body {
 .user-rank,
 .user-name,
 .scoreboard-button,
-.back-button {
+.leaderboard-back-button {
     margin: 4px;
     font-size: 14px;
     padding: 6px;
@@ -124,7 +124,9 @@ body {
 }
 
 
-.menu-button:hover {
+.menu-button:hover,
+.leaderboard-back-button:hover,
+.scoreboard-button:hover {
     background-color: rgb(255, 0, 191);
 }
 

@@ -1,17 +1,21 @@
-import { classic, quintris, hextris } from "./shapes.js";
-
 export class UI {
   constructor() {
+    //UI Variables
+    this.score = 0;
+    this.gameOver = false;
+    this.scoreSubmitted = false;
+    this.gameMode = 'Quintris';
+    this.leaderboardContents = [];
+
+
+    //DOM Elements
     this.scoreText = document.querySelector(".score-text");
     this.levelText = document.querySelector(".level-text");
     this.menu = document.querySelector(".menu");
     this.modeMenu = document.querySelector(".mode-menu");
-
     this.startGameButton = document.querySelector(".js-start-game-button");
 
     this.ssMenu = document.querySelector(".submit-score-menu");
-    this.score = 0;
-    this.scoreSubmitted = false;
     this.submitScoreButton = document.querySelector(".js-submit-score");
     this.playAgain = document.querySelector(".js-play-again");
 
@@ -19,12 +23,13 @@ export class UI {
     this.classicButton = document.querySelector(".js-classic-button");
     this.quintrisButton = document.querySelector(".js-quintris-button");
     this.hextrisButton = document.querySelector(".js-hextris-button");
-    this.gameMode = [...classic, ...quintris];
 
-    this.viewLeaderboardsButton = document.querySelector(".js-view-lb-button")
+    this.viewLeaderboardButtons = document.querySelectorAll(".js-view-lb-button")
     this.leaderboard = document.querySelector(".leaderboard");
-    this.leaderboardEntries = document.querySelector(".leaderboard-entries")
-    this.leaderboardContents = [];
+    this.leaderboardEntries = document.querySelector(".leaderboard-entries");
+    this.leaderboardBackButton = document.querySelector(".leaderboard-back-button");
+    this.leaderboardPageNext = document.getElementById("scoreboard-button-next");
+    this.leaderboardPageBack = document.getElementById("scoreboard-button-back");
   }
 
   updateScore(score) {
@@ -46,24 +51,12 @@ export class UI {
   }
 
   showGameOver() {
+    this.gameOver = true;
     this.ssMenu.style.display = "flex";
   }
 
   changeGameMode(mode) {
-    switch (mode) {
-      case classic:
-        this.gameMode = classic;
-        break;
-
-      case quintris:
-        this.gameMode = [...classic, ...quintris];
-        break;
-
-      case hextris:
-        this.gameMode = [...classic, ...quintris, ...hextris];
-        break;
-    }
-
+    this.gameMode = mode;
     this.menu.style.display = "flex";
     this.modeMenu.style.display = "none";
 
@@ -71,11 +64,26 @@ export class UI {
 
   bindEvents() {
     this.selectModeButton.addEventListener('click', () => this.showSelectMode());
-    this.classicButton.addEventListener('click', () => this.changeGameMode(classic));
-    this.quintrisButton.addEventListener('click', () => this.changeGameMode(quintris));
-    this.hextrisButton.addEventListener('click', () => this.changeGameMode(hextris));
+    this.classicButton.addEventListener('click', () => this.changeGameMode('Classic'));
+    this.quintrisButton.addEventListener('click', () => this.changeGameMode('Quintris'));
+    this.hextrisButton.addEventListener('click', () => this.changeGameMode('Hextris'));
     this.submitScoreButton.addEventListener('click', () => this.submitScore());
-    this.viewLeaderboardsButton.addEventListener('click', () => this.viewLeaderboard());
+    this.leaderboardBackButton.addEventListener('click', () => this.returnToMenu());
+
+    this.viewLeaderboardButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        this.viewLeaderboard();
+      });
+    });
+  }
+
+  returnToMenu() {
+    this.leaderboard.style.display = 'none';
+    if (!this.gameOver) {
+      this.menu.style.display = 'flex'
+    } else {
+      this.ssMenu.style.display = 'flex'
+    }
   }
 
   async viewLeaderboard() {
@@ -104,6 +112,7 @@ export class UI {
 
     this.leaderboardEntries.innerHTML = htmlContent;
     this.menu.style.display = "none";
+    this.ssMenu.style.display = "none";
     this.leaderboard.style.display = "flex";
 }
 
@@ -116,10 +125,12 @@ export class UI {
   async fetchLeaderboard() {
     const res = await fetch("http://localhost:3000/leaderboard");
     const scores = await res.json();
-    scores.forEach((entry) => {
-      this.leaderboardContents.push(entry)
-    });
-    console.log(this.leaderboardContents)
+    this.leaderboardContents = [
+      ...this.leaderboardContents.filter(existing =>
+          !scores.some(newEntry => newEntry.name === existing.name)
+      ),
+      ...scores
+    ];
   }
 
   async submitScore() {
@@ -129,18 +140,17 @@ export class UI {
 
     const name = document.querySelector(".ss-input").value;
     const score = this.score;
+    const mode = this.gameMode
 
     const response = await fetch("http://localhost:3000/leaderboard", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ name, score })
+      body: JSON.stringify({ name, score, mode })
     });
 
     const data = await response.json();
     console.log("Response:", data);
-
   }
-
 }
