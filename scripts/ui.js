@@ -64,6 +64,8 @@ export class UI {
     this.hextrisButton.addEventListener('click', () => this.changeGameMode('Hextris'));
     this.leaderboard.submitScoreButton.addEventListener('click', () => this.submitScore());
     this.leaderboard.leaderboardBackButton.addEventListener('click', () => this.returnToMenu());
+    this.leaderboard.prevPageButton.addEventListener('click', () => this.leaderboard.changePage('prev'));
+    this.leaderboard.nextPageButton.addEventListener('click', () => this.leaderboard.changePage('next'));
 
     document.querySelectorAll(".js-view-lb-button").forEach(button => {
       button.addEventListener("click", () => {
@@ -86,7 +88,6 @@ export class UI {
     const name = document.querySelector(".ss-input").value;
     const score = this.score;
     const mode = this.gameMode;
-
     await this.leaderboard.submitScore(name, score, mode);
   }
 
