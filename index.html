@@ -1,84 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quintris</title>
-    <link rel="icon" type="image/x-icon" href="images/quintris-favicon.png">
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>  
-    <div id="titleText"><img class="logo" src="images/Quintris.png"></div>
 
-    <div class="game-area">
-      <div class="gameBoard">
-        <canvas id="gameCanvas" width="300" height="600"></canvas> 
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quintris</title>
+  <link rel="icon" type="image/x-icon" href="images/quintris-favicon.png">
+  <link rel="stylesheet" href="style.css">
+</head>
 
-        <div class="menu">
-          <button class="menu-button js-start-game-button">Start Game</button>
-          <button class="menu-button js-select-mode-button">Select Mode</button>
-          <button class="menu-button js-view-lb-button">View Leaderboards</button>
-        </div>
+<body>
+  <div id="titleText"><img class="logo" src="images/Quintris.png"></div>
 
-        <div class="mode-menu">
-          <button class="menu-button js-quintris-button">Quintris</button>
-          <button class="menu-button js-classic-button" >Classic</button>
-          <button class="menu-button js-hextris-button">Hextris</button>
-        </div>
+  <div class="game-area">
+    <div class="gameBoard">
+      <canvas id="gameCanvas" width="300" height="600"></canvas>
 
-        <div class="submit-score-menu">
-          <input type="text" placeholder="Enter your name" class="ss-input">
-          <button class="ss-menu-button js-submit-score">Submit Score</button>
-          <button class="ss-menu-button js-view-lb-button">View Leaderboard</button>
-          <button class="ss-menu-button js-play-again">Play Again</button>
-        </div>
-
-        <div class="leaderboard">
-          <div class="leaderboard-entries">
-          </div>
-
-          <div class="self-and-page-control">
-            <div class="leaderboard-entry">
-              <div class="user-rank">
-                493
-              </div>
-              <div class="user-name">
-                The Self 
-              </div>  
-              <div class="page-control">
-                <button class="scoreboard-button" id="scoreboard-button-back">
-                  <
-                </button>
-                <button class="scoreboard-button" id="scoreboard-button-next">
-                  >
-                </button>
-            </div>  
-          </div>
-          <button class="leaderboard-back-button">Back</button>
-          </div>
-        </div>
-
-
-        <div class ="level-text">Level: 1</div> 
-        <div class ="score-text">Score: </div> 
+      <div class="menu">
+        <button class="menu-button js-start-game-button">Start Game</button>
+        <button class="menu-button js-select-mode-button">Select Mode</button>
+        <button class="menu-button js-view-lb-button">View Leaderboards</button>
       </div>
 
-      <div class="hold-menu">
-        <canvas id="hold-menu" width="90" height="90"> </canvas>
+      <div class="mode-menu">
+        <button class="menu-button js-quintris-button">Quintris</button>
+        <button class="menu-button js-classic-button">Classic</button>
+        <button class="menu-button js-hextris-button">Hextris</button>
+      </div>
+
+      <div class="submit-score-menu">
+        <input type="text" placeholder="Enter your name" class="ss-input">
+        <button class="ss-menu-button js-submit-score">Submit Score</button>
+        <button class="ss-menu-button js-view-lb-button">View Leaderboard</button>
+        <button class="ss-menu-button js-play-again">Play Again</button>
+      </div>
+
+      <div class="leaderboard">
+        <div class="leaderboard-controls">
+          <button class="leaderboard-tab active-tab">Classic</button>
+          <button class="leaderboard-tab">Quintris</button>
+          <button class="leaderboard-tab">Hextris</button>
+        </div>
+      
+        <div class="leaderboard-entries"></div>
+      
+        <div class="self-entry">
+          <div class="leaderboard-entry">
+            <div class="user-rank">493</div>
+            <div class="user-name">The Self</div>
+            <div class="user-score">9999</div>
+          </div>
+        </div>
+      
+        <div class="page-controls">
+          <button class="leaderboard-back-button">Back</button>
+          <div class="page-control">
+            <button class="scoreboard-button" id="scoreboard-button-back">&lt;</button>
+            <button class="scoreboard-button" id="scoreboard-button-next">&gt;</button>
+          </div>
+        </div>
       </div>
       
+      <div class="level-text">Level: 1</div>
+      <div class="score-text">Score: </div>
     </div>
 
-    <div class="mute-buttons">
-      <button class="mute-button js-mute-music">Mute Music</button>
-      <button class="mute-button js-mute-sounds">Mute Sounds</button>
-     </div>
+    <div class="hold-menu">
+      <canvas id="hold-menu" width="90" height="90"> </canvas>
+    </div>
 
-    <audio class="bgMusic" src="sounds/tetris-loop.mp3" loop></audio>
-    <audio id="line-clear" src="sounds/line-clear.mp3"></audio>
-    <audio id="game-over" src="sounds/game-over.mp3"></audio>
-    <audio id="piece-down" src="sounds/piece-down.mp3"></audio>
+  </div>
 
-    <script type="module" src="main.js"></script>
-  </body>
-</html> 
+  <div class="mute-buttons">
+    <button class="mute-button js-mute-music">Mute Music</button>
+    <button class="mute-button js-mute-sounds">Mute Sounds</button>
+  </div>
+
+  <audio class="bgMusic" src="sounds/tetris-loop.mp3" loop></audio>
+  <audio id="line-clear" src="sounds/line-clear.mp3"></audio>
+  <audio id="game-over" src="sounds/game-over.mp3"></audio>
+  <audio id="piece-down" src="sounds/piece-down.mp3"></audio>
+
+  <script type="module" src="main.js"></script>
+</body>
+
+</html>

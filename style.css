@@ -48,7 +48,19 @@ button:active, .ss-menu-button:active {
     display: flex;
     flex-direction: row;
     align-items: center;
-    
+}
+
+.leaderboard-controls {
+    display: flex;
+    width: 100%;
+}
+
+.leaderboard-tab {
+    flex: 1;
+}
+
+.active-tab {
+    background-color: rgb(204, 0, 153);
 }
 
 .user-rank, .user-name, .user-score {
@@ -58,19 +70,32 @@ button:active, .ss-menu-button:active {
     background-color: rgb(255, 67, 208);
     border: solid white;
     border-radius: 8px;
+}
 
+.self-entry {
+    display: flex;
+    justify-content: center; 
+}
 
+.page-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 300px;
+}
+
+.page-control {
+    display: flex;
+}
+
+.leaderboard-back-button {
+    margin-right: auto;
 }
 
 .user-rank { width: 30px; }
 .user-name { width: 100px; text-align: left; }
 .user-score { width: 75px; text-align: right; }
-
-/* Page Controls */
-.page-control {
-    display: flex;
-    margin-left: auto;
-}
 
 /* Game Area */
 .game-area {

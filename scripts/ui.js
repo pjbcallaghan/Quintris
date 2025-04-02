@@ -73,6 +73,14 @@ export class UI {
         this.showMenu();  
       });
     });
+
+    document.querySelectorAll(".leaderboard-tab").forEach(button => {
+      button.addEventListener("click", () => {
+        this.leaderboard.changeTab(); 
+        button.classList.add('active-tab')
+      });
+    });
+
   }
 
   returnToMenu() {

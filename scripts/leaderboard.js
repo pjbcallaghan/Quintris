@@ -8,21 +8,28 @@ export class Leaderboard {
     this.submitScoreButton = document.querySelector(".js-submit-score");
     this.prevPageButton = document.getElementById("scoreboard-button-back");
     this.nextPageButton = document.getElementById("scoreboard-button-next");
+    this.tabButtons = document.querySelectorAll(".leaderboard-tab");
     this.scoreSubmitted = false;
     this.score = 0;
+    this.username = '';
+    this.userRank = '';
     this.gameMode = 'Quintris';
     this.currentPage = 0;
   }
 
   async fetchLeaderboard() {
-    const res = await fetch("http://localhost:3000/leaderboard");
-    const scores = await res.json();
-    this.leaderboardContents = [
-      ...this.leaderboardContents.filter(existing =>
-        !scores.some(newEntry => newEntry.name === existing.name)
-      ),
-      ...scores
-    ];
+    const response = await fetch("http://localhost:3000/leaderboard");
+    const leaderboards = await response.json();
+
+    console.log("Leaderboard Data:", leaderboards);
+
+    // Example: Displaying each leaderboard
+    Object.entries(leaderboards).forEach(([mode, scores]) => {
+      console.log(`Mode: ${mode}`);
+      scores.forEach(({ name, score }) => {
+        console.log(`${name}: ${score}`);
+      });
+    });
   }
 
   async submitScore(name, score, mode) {
@@ -42,30 +49,43 @@ export class Leaderboard {
     console.log("Response:", data);
   }
 
-  async viewLeaderboard() {
-    await this.fetchLeaderboard();
+  async viewLeaderboard(mode) {
+    await this.fetchLeaderboard(); // Fetch the latest leaderboard data
+
+    const leaderboardData = this.leaderboardContents[mode]; // Get scores for the selected mode
+
+    if (!leaderboardData) {
+        console.error("No data found for mode:", mode);
+        return;
+    }
 
     let htmlContent = "";
     for (let i = 0; i < 8; i++) {
-      if (this.leaderboardContents[i] !== undefined) {
-        htmlContent += `
-          <div class="leaderboard-entry">
-            <div class="user-rank">${i + 1}</div>
-            <div class="user-name">${this.leaderboardContents[i].name}</div>
-            <div class="user-score">${this.leaderboardContents[i].score}</div>
-          </div>
-        `;
-      } else {
-        break;
-      }
+        if (leaderboardData[i] !== undefined) {
+            htmlContent += `
+              <div class="leaderboard-entry">
+                <div class="user-rank">${i + 1}</div>
+                <div class="user-name">${leaderboardData[i].name}</div>
+                <div class="user-score">${leaderboardData[i].score}</div>
+              </div>
+            `;
+        } else {
+            break;
+        }
     }
 
     this.leaderboardEntries.innerHTML = htmlContent;
     this.leaderboard.style.display = "flex";
-  }
+}
 
   returnToMenu() {
     this.leaderboard.style.display = 'none';
+  }
+
+  changeTab(mode) {
+    this.tabButtons.forEach((button) => {
+      button.classList.remove('active-tab')
+    });
   }
 
   changePage(direction) {
