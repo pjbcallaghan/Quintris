@@ -69,18 +69,23 @@ export class UI {
 
     document.querySelectorAll(".js-view-lb-button").forEach(button => {
       button.addEventListener("click", () => {
-        this.leaderboard.viewLeaderboard();
+        this.leaderboard.viewLeaderboard('Classic');
         this.showMenu();  
       });
     });
 
+    //Bindings for leaderboard tab buttons
     document.querySelectorAll(".leaderboard-tab").forEach(button => {
       button.addEventListener("click", () => {
-        this.leaderboard.changeTab(); 
-        button.classList.add('active-tab')
+        const mode = button.innerHTML.trim();
+        console.log(mode)
+        this.leaderboard.changeTab();
+        this.leaderboard.viewLeaderboard(mode);
+        document.querySelectorAll(".leaderboard-tab").forEach(btn => btn.classList.remove("active-tab"));
+        button.classList.add("active-tab");
       });
     });
-
+    
   }
 
   returnToMenu() {

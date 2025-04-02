@@ -18,18 +18,16 @@ export class Leaderboard {
   }
 
   async fetchLeaderboard() {
-    const response = await fetch("http://localhost:3000/leaderboard");
-    const leaderboards = await response.json();
+    try {
+      const response = await fetch("http://localhost:3000/leaderboard");
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-    console.log("Leaderboard Data:", leaderboards);
-
-    // Example: Displaying each leaderboard
-    Object.entries(leaderboards).forEach(([mode, scores]) => {
-      console.log(`Mode: ${mode}`);
-      scores.forEach(({ name, score }) => {
-        console.log(`${name}: ${score}`);
-      });
-    });
+      const data = await response.json(); // Fetch and parse JSON data
+      this.leaderboardContents = data;   // Store data in leaderboardContents
+      console.log("Fetched leaderboard:", this.leaderboardContents);
+    } catch (error) {
+      console.error("Error fetching leaderboard:", error);
+    }
   }
 
   async submitScore(name, score, mode) {
@@ -55,28 +53,28 @@ export class Leaderboard {
     const leaderboardData = this.leaderboardContents[mode]; // Get scores for the selected mode
 
     if (!leaderboardData) {
-        console.error("No data found for mode:", mode);
-        return;
+      console.error("No data found for mode:", mode);
+      return;
     }
 
     let htmlContent = "";
     for (let i = 0; i < 8; i++) {
-        if (leaderboardData[i] !== undefined) {
-            htmlContent += `
+      if (leaderboardData[i] !== undefined) {
+        htmlContent += `
               <div class="leaderboard-entry">
                 <div class="user-rank">${i + 1}</div>
                 <div class="user-name">${leaderboardData[i].name}</div>
                 <div class="user-score">${leaderboardData[i].score}</div>
               </div>
             `;
-        } else {
-            break;
-        }
+      } else {
+        break;
+      }
     }
 
     this.leaderboardEntries.innerHTML = htmlContent;
     this.leaderboard.style.display = "flex";
-}
+  }
 
   returnToMenu() {
     this.leaderboard.style.display = 'none';
