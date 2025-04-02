@@ -65,13 +65,11 @@ export class UI {
     this.leaderboard.submitScoreButton.addEventListener('click', () => this.submitScore());
     this.leaderboard.leaderboardBackButton.addEventListener('click', () => this.returnToMenu());
 
-    // Bind leaderboard view buttons to viewLeaderboard method in the Leaderboard class
     document.querySelectorAll(".js-view-lb-button").forEach(button => {
       button.addEventListener("click", () => {
         this.leaderboard.viewLeaderboard();
         this.showMenu();  
       });
-      
     });
   }
 

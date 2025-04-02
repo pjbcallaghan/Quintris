@@ -103,6 +103,22 @@ export class Game {
     this.holdUsed = true;
   }
 
+  checkGameOver() {
+    if (
+      this.grid.getGrid()[0][4] !== 'EMPTY' ||
+      this.grid.getGrid()[0][5] !== 'EMPTY' ||
+      this.grid.getGrid()[0][6] !== 'EMPTY'
+    ) {
+      this.gameRunning = false;
+      this.ui.score = this.score;
+      this.ui.scoreSubmitted = false;
+      Sounds.bgMusic.pause();
+      Sounds.gameOverSound.play();
+      this.ui.showGameOver();
+    }
+  }
+
+  //Rendering Functions
   drawHold() {
     subCtx.clearRect(0, 0, subCanvas.width, subCanvas.height);
     const tetrominoWidth = this.holdTetromino.shape[0].length * 20;  // Width in pixels
@@ -140,21 +156,8 @@ export class Game {
     });
   }
 
-  checkGameOver() {
-    if (
-      this.grid.getGrid()[0][4] !== 'EMPTY' ||
-      this.grid.getGrid()[0][5] !== 'EMPTY' ||
-      this.grid.getGrid()[0][6] !== 'EMPTY'
-    ) {
-      this.gameRunning = false;
-      this.ui.score = this.score;
-      this.ui.scoreSubmitted = false;
-      Sounds.bgMusic.pause();
-      Sounds.gameOverSound.play();
-      this.ui.showGameOver();
-    }
-  }
 
+  //User Controls
   handleInput(event) {
     if (event.key === "p") {
       this.gameRunning = !this.gameRunning;
