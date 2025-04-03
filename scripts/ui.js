@@ -81,7 +81,7 @@ export class UI {
       button.addEventListener("click", () => {
         const mode = button.innerHTML.trim();
         this.leaderboard.changeTab();
-        this.leaderboard.viewLeaderboard(mode);
+        this.leaderboard.viewLeaderboard(mode, 0);
         document.querySelectorAll(".leaderboard-tab").forEach(btn => btn.classList.remove("active-tab"));
         button.classList.add("active-tab");
       });
