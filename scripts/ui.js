@@ -25,9 +25,6 @@ export class UI {
 
     // Initialize the Leaderboard class (child)
     this.leaderboard = new Leaderboard();
-
-    // Bind events for UI actions
-    this.bindEvents();
   }
 
   updateScore(score) {

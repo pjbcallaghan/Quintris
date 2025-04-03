@@ -57,6 +57,7 @@ export class Leaderboard {
     await this.fetchLeaderboard();
 
     const leaderboardData = this.leaderboardContents[mode];
+    console.log(leaderboardData)
 
     if (!leaderboardData) {
       console.error("No data found for mode:", mode);
@@ -102,9 +103,9 @@ export class Leaderboard {
   }
 
   changePage(direction) {
-    const totalEntries = this.leaderboardContents.length;
-    const totalPages = Math.ceil(totalEntries / 8);
-
+    const leaderboardData = this.leaderboardContents[document.querySelector(".active-tab").innerHTML]; 
+    const totalPages = Math.ceil(leaderboardData.length / 8);
+  
     if (direction === "next" && this.currentPage < totalPages - 1) {
       this.currentPage += 1;
     } else if (direction === "prev" && this.currentPage > 0) {
@@ -112,19 +113,23 @@ export class Leaderboard {
     } else {
       return;
     }
-
+  
     const startIdx = this.currentPage * 8;
-    const endIdx = Math.min(startIdx + 8, totalEntries);
+    const endIdx = startIdx + 8;
 
     let htmlContent = "";
     for (let i = startIdx; i < endIdx; i++) {
+      if (leaderboardData[i]) {
       htmlContent += `
         <div class="leaderboard-entry">
           <div class="user-rank">${i + 1}</div>
-          <div class="user-name">${this.leaderboardContents[i].name}</div>
-          <div class="user-score">${this.leaderboardContents[i].score}</div>
+          <div class="user-name">${leaderboardData[i].name}</div>
+          <div class="user-score">${leaderboardData[i].score}</div>
         </div>
       `;
+      } else {
+        break;
+      }
     }
     this.updateSelfEntry();
     this.leaderboardEntries.innerHTML = htmlContent;
@@ -133,16 +138,16 @@ export class Leaderboard {
   updateSelfEntry() {
     if (document.querySelector(".active-tab").innerHTML === this.gameMode) {
       if (this.userRank) {
-        if (this.userRank > (8 * this.currentPage - 7) && this.userRank <= (8 * this.currentPage)) {
-          document.querySelector(".self-entry").innerHTML = `
-            <div class="leaderboard-entry">
-              <div class="user-rank">${this.userRank}</div>
-              <div class="user-name">${this.username}</div>
-              <div class="user-score">${this.score}</div>
-            </div>
-          `;
-        } else {
+        if (this.userRank < (8 * this.currentPage - 7) && this.userRank >= (8 * this.currentPage)) {
           document.querySelector(".self-entry").innerHTML = ``
+        } else {
+          document.querySelector(".self-entry").innerHTML = `
+          <div class="leaderboard-entry">
+            <div class="user-rank">${this.userRank}</div>
+            <div class="user-name">${this.username}</div>
+            <div class="user-score">${this.score}</div>
+          </div>
+        `;
         }
       }
     }
