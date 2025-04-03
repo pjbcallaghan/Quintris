@@ -63,6 +63,14 @@ export class Leaderboard {
       return;
     }
 
+    document.querySelectorAll(".leaderboard-tab").forEach(button => {
+      if (button.innerHTML.trim() === mode) {
+        button.classList.add("active-tab"); // Set active tab
+      } else {
+        button.classList.remove("active-tab"); // Remove from other tabs
+      }
+    });
+
     let htmlContent = "";
     for (let i = 0; i < 8; i++) {
       if (leaderboardData[i] !== undefined) {
@@ -77,21 +85,8 @@ export class Leaderboard {
         break;
       }
     }
-
-    if (this.userRank) {
-      if (this.userRank < 9) {
-        document.querySelector(".self-entry").innerHTML = ``
-      } else {
-        document.querySelector(".self-entry").innerHTML = `
-          <div class="leaderboard-entry">
-            <div class="user-rank">${this.userRank}</div>
-            <div class="user-name">${this.username}</div>
-            <div class="user-score">${this.score}</div>
-          </div>
-        `
-      }
-    }
-
+    
+    this.updateSelfEntry();
     this.leaderboardEntries.innerHTML = htmlContent;
     this.leaderboard.style.display = "flex";
   }
@@ -100,7 +95,7 @@ export class Leaderboard {
     this.leaderboard.style.display = 'none';
   }
 
-  changeTab(mode) {
+  changeTab() {
     this.tabButtons.forEach((button) => {
       button.classList.remove('active-tab')
     });
@@ -132,20 +127,24 @@ export class Leaderboard {
       `;
     }
 
-    if (this.userRank) {
-      if (userRank < (8 * this.currentPage - 7) || userRank > (8 * this.currentPage)) {
-        document.querySelector(".self-entry").innerHTML = ``
-      } else {
-        document.querySelector(".self-entry").innerHTML = `
-          <div class="leaderboard-entry">
-            <div class="user-rank">${this.userRank}</div>
-            <div class="user-name">${this.username}</div>
-            <div class="user-score">${this.score}</div>
-          </div>
-        `
-      }
-    }
-
+    this.updateSelfEntry();
     this.leaderboardEntries.innerHTML = htmlContent;
   }
+
+  updateSelfEntry() {
+    if (this.userRank) {
+      if (this.userRank > (8 * this.currentPage - 7) && this.userRank <= (8 * this.currentPage)) {
+        document.querySelector(".self-entry").innerHTML = `
+            <div class="leaderboard-entry">
+              <div class="user-rank">${this.userRank}</div>
+              <div class="user-name">${this.username}</div>
+              <div class="user-score">${this.score}</div>
+            </div>
+          `;
+      } else {
+        document.querySelector(".self-entry").innerHTML = ``
+      }
+    }
+  }
+
 }

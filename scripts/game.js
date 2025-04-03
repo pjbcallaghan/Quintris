@@ -29,10 +29,13 @@ export class Game {
     switch (this.ui.gameMode) {
       case 'Classic':
         this.tetrominos = classic;
+        break;
       case 'Quintris':
         this.tetrominos = [...classic, ...quintris];
+        break;
       case 'Hextris':
         this.tetrominos = [...classic, ...quintris, ...hextris];
+        break;
     }
     this.ui.gameOver = false;
     this.ui.showMenu();

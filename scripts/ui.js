@@ -1,4 +1,6 @@
 import { Leaderboard } from "./leaderboard.js";
+//TODO 
+// Update it so that self entry is only shown on the correct tab
 
 export class UI {
   constructor() {
@@ -69,7 +71,7 @@ export class UI {
 
     document.querySelectorAll(".js-view-lb-button").forEach(button => {
       button.addEventListener("click", () => {
-        this.leaderboard.viewLeaderboard('Quintris');
+        this.leaderboard.viewLeaderboard(this.gameMode);
         this.showMenu();  
       });
     });
