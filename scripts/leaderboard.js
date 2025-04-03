@@ -12,7 +12,7 @@ export class Leaderboard {
     this.scoreSubmitted = false;
     this.score = 0;
     this.username = '';
-    this.userRank = '';
+    this.userRank;
     this.gameMode = 'Quintris';
     this.currentPage = 0;
   }
@@ -48,16 +48,16 @@ export class Leaderboard {
 
     if (data.rank) {
       this.score = data.score
-      this.userRank = data.rank
+      this.userRank = data.rank - 1
       this.username = data.name
     }
   }
 
   async viewLeaderboard(mode) {
+    this.currentPage = 0;
     await this.fetchLeaderboard();
 
     const leaderboardData = this.leaderboardContents[mode];
-    console.log(leaderboardData)
 
     if (!leaderboardData) {
       console.error("No data found for mode:", mode);
@@ -138,7 +138,7 @@ export class Leaderboard {
   updateSelfEntry() {
     if (document.querySelector(".active-tab").innerHTML === this.gameMode) {
       if (this.userRank) {
-        if (this.userRank < (8 * this.currentPage - 7) && this.userRank >= (8 * this.currentPage)) {
+        if (this.userRank > (this.currentPage * 8) && this.userRank < ((this.currentPage * 8) + 8)) {
           document.querySelector(".self-entry").innerHTML = ``
         } else {
           document.querySelector(".self-entry").innerHTML = `
@@ -150,6 +150,8 @@ export class Leaderboard {
         `;
         }
       }
+    } else {
+      document.querySelector(".self-entry").innerHTML = ``
     }
   }
 
