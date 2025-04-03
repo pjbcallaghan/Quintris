@@ -24,14 +24,14 @@ export class Leaderboard {
 
       const data = await response.json(); // Fetch and parse JSON data
       this.leaderboardContents = data;   // Store data in leaderboardContents
-      console.log("Fetched leaderboard:", this.leaderboardContents);
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
     }
   }
 
   async submitScore(name, score, mode) {
-    if (this.scoreSubmitted === true) { return }
+    if (this.scoreSubmitted) return;
+
     this.scoreSubmitted = true;
     this.submitScoreButton.innerHTML = 'Score submitted';
 
@@ -44,7 +44,13 @@ export class Leaderboard {
     });
 
     const data = await response.json();
-    console.log("Response:", data);
+    console.log("Score submitted:", data);
+
+    if (data.rank) {
+      this.score = data.score
+      this.userRank = data.rank
+      this.username = data.name
+    }
   }
 
   async viewLeaderboard(mode) {
@@ -71,6 +77,19 @@ export class Leaderboard {
         break;
       }
     }
+
+    if (this.userRank) {
+      if (this.userRank < 9) {
+        document.querySelector(".self-entry").innerHTML = ``
+      } else {
+        document.querySelector(".self-entry").innerHTML = `
+          <div class="leaderboard-entry">
+            <div class="user-rank">${this.userRank}</div>
+            <div class="user-name">${this.username}</div>
+            <div class="user-score">${this.score}</div>
+          </div>
+        `
+      }
 
     this.leaderboardEntries.innerHTML = htmlContent;
     this.leaderboard.style.display = "flex";
@@ -111,6 +130,19 @@ export class Leaderboard {
         </div>
       `;
     }
+
+    if (this.userRank) {
+      if (userRank < (8 * this.currentPage - 7) || userRank > (8 * this.currentPage)) {
+        document.querySelector(".self-entry").innerHTML = ``
+      } else {
+        document.querySelector(".self-entry").innerHTML = `
+          <div class="leaderboard-entry">
+            <div class="user-rank">${this.userRank}</div>
+            <div class="user-name">${this.username}</div>
+            <div class="user-score">${this.score}</div>
+          </div>
+        `
+      }
 
     this.leaderboardEntries.innerHTML = htmlContent;
   }

@@ -69,7 +69,7 @@ export class UI {
 
     document.querySelectorAll(".js-view-lb-button").forEach(button => {
       button.addEventListener("click", () => {
-        this.leaderboard.viewLeaderboard('Classic');
+        this.leaderboard.viewLeaderboard('Quintris');
         this.showMenu();  
       });
     });
@@ -78,7 +78,6 @@ export class UI {
     document.querySelectorAll(".leaderboard-tab").forEach(button => {
       button.addEventListener("click", () => {
         const mode = button.innerHTML.trim();
-        console.log(mode)
         this.leaderboard.changeTab();
         this.leaderboard.viewLeaderboard(mode);
         document.querySelectorAll(".leaderboard-tab").forEach(btn => btn.classList.remove("active-tab"));
