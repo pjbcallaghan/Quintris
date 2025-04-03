@@ -72,9 +72,13 @@ button:active, .ss-menu-button:active {
     border-radius: 8px;
 }
 
-.self-entry {
+.self-entry-tab {
     display: flex;
     justify-content: center; 
+    background-color: white;
+    border-color: rgb(0, 155, 239);
+    color: rgb(0, 155, 239);
+
 }
 
 .page-controls {
