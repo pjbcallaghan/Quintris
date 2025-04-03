@@ -90,6 +90,7 @@ export class Leaderboard {
           </div>
         `
       }
+    }
 
     this.leaderboardEntries.innerHTML = htmlContent;
     this.leaderboard.style.display = "flex";
@@ -143,6 +144,7 @@ export class Leaderboard {
           </div>
         `
       }
+    }
 
     this.leaderboardEntries.innerHTML = htmlContent;
   }
