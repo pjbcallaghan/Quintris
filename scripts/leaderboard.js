@@ -100,7 +100,6 @@ export class Leaderboard {
     }
 
     this.updateLeaderboardView(document.querySelector(".active-tab").innerHTML)
-    this.updateSelfEntry();
   }
 
   updateLeaderboardView(mode) {
@@ -122,6 +121,7 @@ export class Leaderboard {
       }
     }
     this.leaderboardEntries.innerHTML = htmlContent;
+    this.updateSelfEntry();
   }
 
   updateSelfEntry() {

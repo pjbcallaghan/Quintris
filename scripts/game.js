@@ -15,7 +15,7 @@ export class Game {
     this.holdUsed = false;
     this.score = 0;
     this.level = 1;
-    this.gameSpeed = 750;
+    this.gameSpeed = 650;
     this.gameRunning = false;
 
     this.ui.bindEvents();
@@ -42,6 +42,7 @@ export class Game {
     this.grid.reset();
     this.score = 0;
     this.level = 1;
+    this.gameSpeed = 650;
     this.gameRunning = true;
     this.ui.updateScore(this.score);
     this.ui.updateLevel(this.level);
@@ -162,11 +163,6 @@ export class Game {
 
   //User Controls
   handleInput(event) {
-    if (event.key === "p") {
-      this.gameRunning = !this.gameRunning;
-      this.gameLoop();
-    }
-
     if (!this.gameRunning) { return }
     switch (event.key) {
       case "ArrowLeft":
