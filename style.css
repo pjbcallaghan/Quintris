@@ -50,6 +50,24 @@ button:active, .ss-menu-button:active {
     align-items: center;
 }
 
+.loading-spinner {
+    border: 4px solid #ffdff7;  /* Light grey background */
+    border-top: 4px solid #ff00ea;  /* Blue spinner part */
+    border-radius: 50%;  /* Make it circular */
+    width: 10px;
+    height: 10px;
+    animation: spin 1s linear infinite;  /* Spin animation */
+    display: none;
+    position: absolute;
+  }
+  
+  /* Keyframes for spinning effect */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+
 .leaderboard-controls {
     display: flex;
     width: 100%;
@@ -73,8 +91,6 @@ button:active, .ss-menu-button:active {
 }
 
 .self-entry-tab {
-    display: flex;
-    justify-content: center; 
     background-color: white;
     border-color: rgb(0, 155, 239);
     color: rgb(0, 155, 239);

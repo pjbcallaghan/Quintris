@@ -1,6 +1,8 @@
 export class Leaderboard {
   constructor() {
     // Initialize leaderboard-specific variables
+    this.dotsCount = 1;
+    this.loadingSpinner = document.querySelector(".loadingSpinner")
     this.leaderboardContents = [];
     this.leaderboardEntries = document.querySelector(".leaderboard-entries");
     this.leaderboard = document.querySelector(".leaderboard");
@@ -17,9 +19,19 @@ export class Leaderboard {
     this.currentPage = 0;
   }
 
+  returnToMenu() {
+    this.leaderboard.style.display = 'none';
+  }
+
+  changeTab() {
+    this.tabButtons.forEach((button) => {
+      button.classList.remove('active-tab')
+    });
+  }
+
   async fetchLeaderboard() {
     try {
-      const response = await fetch("http://localhost:3000/leaderboard");
+      const response = await fetch("https://web-production-83ce.up.railway.app/leaderboard");
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
       const data = await response.json(); // Fetch and parse JSON data
@@ -33,9 +45,9 @@ export class Leaderboard {
     if (this.scoreSubmitted) return;
 
     this.scoreSubmitted = true;
-    this.submitScoreButton.innerHTML = 'Score submitted';
+    this.submitScoreButton.innerHTML = 'Please wait...';
 
-    const response = await fetch("http://localhost:3000/leaderboard", {
+    const response = await fetch("https://web-production-83ce.up.railway.app/leaderboard", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -44,25 +56,23 @@ export class Leaderboard {
     });
 
     const data = await response.json();
+    this.submitScoreButton.innerHTML = 'Score submitted!';
     console.log("Score submitted:", data);
 
     if (data.rank) {
+      this.gameMode = data.mode
       this.score = data.score
       this.userRank = data.rank - 1
       this.username = data.name
     }
   }
 
+
   async viewLeaderboard(mode) {
-    this.currentPage = 0;
+    loadingSpinner.style.display = 'flex';
     await this.fetchLeaderboard();
-
-    const leaderboardData = this.leaderboardContents[mode];
-
-    if (!leaderboardData) {
-      console.error("No data found for mode:", mode);
-      return;
-    }
+    loadingSpinner.style.display = 'none';
+    this.currentPage = 0;
 
     document.querySelectorAll(".leaderboard-tab").forEach(button => {
       if (button.innerHTML.trim() === mode) {
@@ -72,34 +82,9 @@ export class Leaderboard {
       }
     });
 
-    let htmlContent = "";
-    for (let i = 0; i < 8; i++) {
-      if (leaderboardData[i] !== undefined) {
-        htmlContent += `
-        <div class="leaderboard-entry">
-          <div class="user-rank${(this.userRank - 1 === i) ? ' self-entry-tab' : ''}">${i + 1}</div>
-          <div class="user-name${(this.userRank - 1 === i) ? ' self-entry-tab' : ''}">${leaderboardData[i].name}</div>
-          <div class="user-score${(this.userRank - 1 === i) ? ' self-entry-tab' : ''}">${leaderboardData[i].score}</div>
-        </div>
-            `;
-      } else {
-        break;
-      }
-    }
-
+    this.updateLeaderboardView(mode)
     this.updateSelfEntry();
-    this.leaderboardEntries.innerHTML = htmlContent;
     this.leaderboard.style.display = "flex";
-  }
-
-  returnToMenu() {
-    this.leaderboard.style.display = 'none';
-  }
-
-  changeTab() {
-    this.tabButtons.forEach((button) => {
-      button.classList.remove('active-tab')
-    });
   }
 
   changePage(direction) {
@@ -114,24 +99,28 @@ export class Leaderboard {
       return;
     }
 
-    const startIdx = this.currentPage * 8;
-    const endIdx = startIdx + 8;
+    this.updateLeaderboardView(document.querySelector(".active-tab").innerHTML)
+    this.updateSelfEntry();
+  }
+
+  updateLeaderboardView(mode) {
+    const leaderboardData = this.leaderboardContents[mode];
 
     let htmlContent = "";
-    for (let i = startIdx; i < endIdx; i++) {
+    for (let i = (this.currentPage * 8); i < (this.currentPage * 8) + 8; i++) {
       if (leaderboardData[i]) {
+        //This looks horrible and needs to be refactored
         htmlContent += `
         <div class="leaderboard-entry">
-          <div class="user-rank${(this.userRank - 1 === i) ? ' self-entry-tab' : ''}">${i + 1}</div>
-          <div class="user-name${(this.userRank - 1 === i) ? ' self-entry-tab' : ''}">${leaderboardData[i].name}</div>
-          <div class="user-score${(this.userRank - 1 === i) ? ' self-entry-tab' : ''}">${leaderboardData[i].score}</div>
+          <div class="user-rank${((this.userRank - 1 === i) && (this.gameMode === document.querySelector(".active-tab").innerHTML)) ? ' self-entry-tab' : ''}">${i + 1}</div>
+          <div class="user-name${((this.userRank - 1 === i) && (this.gameMode === document.querySelector(".active-tab").innerHTML)) ? ' self-entry-tab' : ''}">${leaderboardData[i].name}</div>
+          <div class="user-score${((this.userRank - 1 === i) && (this.gameMode === document.querySelector(".active-tab").innerHTML)) ? ' self-entry-tab' : ''}">${leaderboardData[i].score}</div>
         </div>
       `;
       } else {
         break;
       }
     }
-    this.updateSelfEntry();
     this.leaderboardEntries.innerHTML = htmlContent;
   }
 

@@ -68,7 +68,7 @@ export class UI {
 
     document.querySelectorAll(".js-view-lb-button").forEach(button => {
       button.addEventListener("click", () => {
-        this.leaderboard.viewLeaderboard(this.gameMode);
+        this.leaderboard.viewLeaderboard(this.leaderboard.gameMode);
         this.showMenu();  
       });
     });
@@ -78,9 +78,9 @@ export class UI {
       button.addEventListener("click", () => {
         const mode = button.innerHTML.trim();
         this.leaderboard.changeTab();
-        this.leaderboard.viewLeaderboard(mode, 0);
         document.querySelectorAll(".leaderboard-tab").forEach(btn => btn.classList.remove("active-tab"));
         button.classList.add("active-tab");
+        this.leaderboard.updateLeaderboardView(mode);
       });
     });
     
