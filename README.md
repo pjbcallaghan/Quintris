@@ -1,6 +1,6 @@
 # Quintris
 
-**Quintris** is a browser-based Tetris-inspired game developed to explore custom game logic, responsive UI design, and full-stack web architecture. Built using **vanilla JavaScript**, **HTML**, and **CSS** on the frontend, it extends the classic Tetris gameplay with additional block shapes. A custom **Node.js** backend powers the leaderboard system with a **PostgreSQL** database, deployed via **Railway**.
+**Quintris** is a browser-based Tetris-inspired game developed to explore custom game logic, UI design, and full-stack web architecture. Built using **vanilla JavaScript**, **HTML**, and **CSS** on the frontend, it extends the classic Tetris gameplay with additional block shapes. A custom **Node.js** backend powers the leaderboard system with a **PostgreSQL** database, deployed via **Railway**.
 
 **Live Demo**: [pjbcallaghan.github.io/Quintris](https://pjbcallaghan.github.io/Quintris)
 
