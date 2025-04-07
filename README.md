@@ -4,6 +4,8 @@
 
 **Live Demo**: [pjbcallaghan.github.io/Quintris](https://pjbcallaghan.github.io/Quintris)
 
+**Controls**: Use arrow keys or WASD to move and rotate the Tetris piece, and use the spacebar to store it.
+
 ---
 
 ## Project Objectives
@@ -25,7 +27,9 @@
   - **Hextris** – Introduces 3 more unique block shapes
 - Grid-based movement, rotation logic, and line-clearing detection
 - Increasing difficulty as play progresses
+- A hold system, for players to store unwanted blocks
 - Score system with persistent online leaderboard
+- Original Tetris music and custom sound effects
 
 ---
 
