@@ -34,8 +34,8 @@ export class Leaderboard {
       const response = await fetch("https://web-production-83ce.up.railway.app/leaderboard");
       if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
-      const data = await response.json(); // Fetch and parse JSON data
-      this.leaderboardContents = data;   // Store data in leaderboardContents
+      const data = await response.json(); 
+      this.leaderboardContents = data;   
     } catch (error) {
       console.error("Error fetching leaderboard:", error);
     }
